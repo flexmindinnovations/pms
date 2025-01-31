@@ -1,0 +1,45 @@
+@import "tailwindcss";
+
+:root {
+    --darkbg: rgb(15, 17, 21);
+    --lightbg: rgba(15, 17, 21, 0.7);
+    --bg-image: radial-gradient(rgb(255, 255, 255) 10%, transparent 10%),
+    radial-gradient(rgb(255, 255, 255) 10%, transparent 10%),
+    radial-gradient(rgb(165, 154, 103) 10%, transparent 10%),
+    radial-gradient(rgb(165, 154, 103) 10%, transparent 10%);
+    --polka-bg-position: 0px 0px, 4px 4px, -0.4px 0.4px, 3.6px 4.4px;
+    --polka-bg-size: 8px 8px;
+    --polka-bg-color: rgb(15, 17, 21);
+}
+
+@layer utilities {
+    .darkBg {
+        background-color: var(--darkbg, rgb(255, 255, 255));
+    }
+
+    .polka {
+        background-image: radial-gradient(rgb(0, 0, 0) 10%, transparent 10%),
+        radial-gradient(rgb(0, 0, 0) 10%, transparent 10%),
+        radial-gradient(rgb(75, 109, 168) 10%, transparent 10%),
+        radial-gradient(rgb(75, 109, 168) 10%, transparent 10%);
+        background-position: 0px 0px, 4px 4px, -0.4px 0.4px, 3.6px 4.4px;
+        background-size: 8px 8px;
+        background-color: rgb(17, 15, 21);
+    }
+}
+
+html, body, #root {
+    margin: 0;
+    padding: 0;
+    width: 100vw;
+    height: 100vh;
+    overflow: hidden;
+}
+
+.gradientText {
+    @apply text-center text-transparent bg-clip-text bg-gradient-to-r from-purple-400 via-pink-500 to-red-600;
+}
+
+.mantine-datatable-scroll-area {
+    overflow: auto !important;
+}

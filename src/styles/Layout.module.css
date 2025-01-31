@@ -1,0 +1,23 @@
+@import 'tailwindcss';
+
+
+.navbarContainer {
+    @apply relative flex flex-col w-full gap-2 my-4;
+}
+
+.navbarItemWrapper {
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.navbarItem {
+    @apply max-w-[60%] md:max-w-[90%] lg:max-w-[85%] xl:max-w-[85%] 2xl:max-w-[85%] mr-auto rounded-r-full w-full m-0;
+}
+
+.activeItem {
+    @apply bg-[var(--mantine-color-brand-9)] text-white;
+}
+
+.inactiveItem {
+    @apply hover:bg-gray-200 hover:text-[var(--mantine-color-brand-9)];
+}

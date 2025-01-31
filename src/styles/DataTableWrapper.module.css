@@ -1,0 +1,32 @@
+@import "tailwindcss";
+
+.toolbar {
+    @apply w-full flex items-center justify-between;
+}
+
+:root[dir='rtl'] .toolbar {
+    @apply w-full flex flex-row-reverse items-center justify-between;
+}
+
+.dataTableWrapper {
+    @apply flex-1 flex items-center justify-end gap-2;
+}
+
+:root[dir='rtl'] .dataTableWrapper {
+    @apply flex-1 flex flex-row items-center justify-start gap-2;
+}
+
+.icon {
+    width: rem(10px);
+    height: auto;
+    vertical-align: rem(-1px);
+    margin-right: rem(8px);
+}
+
+.expandIcon {
+    transition: transform 0.2s;
+}
+
+.expandIconRotated {
+    transform: rotate(90deg);
+}
