@@ -76,7 +76,7 @@ export default function Login() {
                     setEncryptedData("userID", userID);
                     setEncryptedData("user", userName);
                     utils.showNotifications(message,
-                        <p className={`text-green-600`}>{'Successfully logged in!'}</p>,
+                        <p>{'Successfully logged in!'}</p>,
                         'success',
                         theme);
                     setTimeout(() => { navigate('/') }, 2000);

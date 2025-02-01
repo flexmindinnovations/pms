@@ -16,9 +16,9 @@
 .navbarItem {
     max-width: 60%;
     margin-right: auto;
-    border-radius: 9999px;
     width: 100%;
-    margin: 0;
+    border-top-right-radius: 99999px;
+    border-bottom-right-radius: 99999px;
 }
 
 @media (min-width: 768px) {
