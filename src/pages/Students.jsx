@@ -21,18 +21,6 @@ export default function Students() {
     * Email
     * Guardian Email
     * */
-
-    // {
-    //     "id": "becb2b7c-a45f-426d-9029-0d2a62275691",
-    //     "name": "Ali Khan",
-    //     "instituteName": "Oxford International School",
-    //     "batch": "2025",
-    //     "phone": "+919876543210",
-    //     "gaurdianPhone": "+919876543211",
-    //     "email": "ali.khan@example.com",
-    //     "gaurdianEmail": "parent.khan@example.com"
-    // }
-
     const colPros = {
         height: 50,
     }

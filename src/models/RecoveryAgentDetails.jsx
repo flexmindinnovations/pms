@@ -1,6 +1,6 @@
 import { Container, Text } from '@mantine/core';
 
-export function RecoveryAgent({data = {}}) {
+export function RecoveryAgentDetails({data = {}}) {
     return(
         <Container>
             <Text>Recovery Agent Details</Text>

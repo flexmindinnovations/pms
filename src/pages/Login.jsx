@@ -16,10 +16,9 @@ import {useEffect, useState} from "react";
 import {useForm} from "@mantine/form";
 import {useHttp} from "@hooks/AxiosInstance.js";
 import {useApiConfig} from "@context/ApiConfig.jsx";
-import styles from '@styles/Login.module.css';
 import {utils} from "../utils.js";
-import { useNavigate } from "react-router-dom";
-import { useEncrypt } from "@hooks/EncryptData.js";
+import {useNavigate} from "react-router-dom";
+import {useEncrypt} from "@hooks/EncryptData.js";
 
 export default function Login() {
     const [cardKey, setCardKey] = useState('');
@@ -28,7 +27,7 @@ export default function Login() {
     const apiConfig = useApiConfig();
     const theme = useMantineTheme();
     const navigate = useNavigate();
-    const { setEncryptedData } = useEncrypt();
+    const {setEncryptedData} = useEncrypt();
     const form = useForm({
         initialValues: {
             loginName: "",
@@ -70,7 +69,7 @@ export default function Login() {
             const response = await loginUser({...values});
             if (response.status === 200) {
                 const data = response.data;
-                const {authenticationToken, userID, message, userName} = data;
+                const {authenticationToken, userID, message, userName, emailID} = data;
                 if (authenticationToken) {
                     sessionStorage.setItem("token", authenticationToken);
                     setEncryptedData("userID", userID);
@@ -79,13 +78,34 @@ export default function Login() {
                         <p>{'Successfully logged in!'}</p>,
                         'success',
                         theme);
-                    setTimeout(() => { navigate('/') }, 2000);
+                    createAgent({name: userName, email: emailID, contact: data?.contact}).then();
                 }
             }
         } catch (err) {
             console.error("Error:", err);
             utils.showNotifications('Error',
                 <p className={`text-white`}>{'Error while logging in!'}</p>,
+                'error',
+                theme);
+        } finally {
+            setIsLoading(false);
+        }
+    }
+
+    const createAgent = async ({name, email, contact = null}) => {
+        setIsLoading(true);
+        const payload = {name, email, contact};
+        try {
+            const response = await post(apiConfig.recoveryAgent.create, payload);
+            if (response.status === 200) {
+                    setTimeout(() => {
+                        navigate('/')
+                    }, 2000);
+            }
+        } catch (err) {
+            console.error("Error:", err);
+            utils.showNotifications('Error',
+                <p className={`text-white`}>{err.message}</p>,
                 'error',
                 theme);
         } finally {
