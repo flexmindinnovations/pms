@@ -126,7 +126,7 @@ export function DataTableWrapper({
                         <TextInput
                             type="text"
                             leftSection={<Search size={16}/>}
-                            disabled={loading || !dataSource?.length}
+                            disabled={loading || !dataSource?.items?.length}
                             rightSection={
                                 searchQuery && (
                                     <Tooltip label="Clear Search">
