@@ -114,8 +114,8 @@ export default function Login() {
                         <Stack gap={0} align="center">
                             <div
                                 className="text-cente mb-4">
-                                <Title className={`!leading-7 ${styles.gradientText}`}>PMS</Title>
-                                <Text className={styles.gradientText}>Fee Recovery</Text>
+                                <Title className={`!leading-7 gradientText`}>PMS</Title>
+                                <p className={`gradientText !font-bold`}>Fee Recovery</p>
                             </div>
                             <Text className="text-center !text-white">Enter your credentials to continue</Text>
                         </Stack>

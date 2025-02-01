@@ -8,6 +8,13 @@ const contextConfig = {
         create: `${endpoint}/Student`,
         update: `${endpoint}/Student`,
         delete: `${endpoint}/Student`,
+    },
+    recoveryAgent: {
+        list: (pageNumber = 1, pageSize = 1) => `${endpoint}/RecoveryAgent/List?PageNumber=${pageNumber}&PageSize=${pageSize}`,
+        getById: (id) => `${endpoint}/RecoveryAgent?Id=${id}`,
+        create: `${endpoint}/RecoveryAgent`,
+        update: `${endpoint}/RecoveryAgent`,
+        delete: `${endpoint}/RecoveryAgent`,
     }
 }
 

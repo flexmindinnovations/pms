@@ -111,7 +111,7 @@ export default function Layout() {
                             <div
                                 className="text-cente mb-4">
                                 <Title className={`!leading-8 gradientText`}>PMS</Title>
-                                <Text className={`gradientText`}>Fee Recovery</Text>
+                                <p className={`gradientText !font-bold`}>Fee Recovery</p>
                             </div>
                         </Link>
                         <Burger
