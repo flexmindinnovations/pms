@@ -12,6 +12,7 @@ export function useModal(handleRefresh) {
              props = '',
              isAddEdit = true,
              size = 'lg',
+            handleRefresh,
          }) => {
             modals.closeAll();
             modals.open({
@@ -31,8 +32,8 @@ export function useModal(handleRefresh) {
                         data={data}
                         handleCancel={(event) => {
                             const { refresh } = event;
-                            modals.closeAll();
                             if (refresh) handleRefresh({ refresh });
+                            modals.closeAll();
                         }}
                     />
                 ),

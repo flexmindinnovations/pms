@@ -1,7 +1,7 @@
 import {Anchor, Container, useMantineTheme} from "@mantine/core";
 import {useCallback, useEffect, useMemo, useState} from "react";
 import {DataTableWrapper} from "@components/DataTableWrapper.jsx";
-import {studentData, utils} from "../utils.js";
+import {utils} from "../utils.js";
 import {CreateUpdateStudent} from "../models/CreateUpdateStudent.jsx";
 import {useModal} from "@hooks/AddEditModal.jsx";
 import {FollowUp} from "../models/FllowUp.jsx";
@@ -36,7 +36,7 @@ export default function Students() {
     const colPros = {
         height: 50,
     }
-    const [dataSource, setDataSource] = useState(studentData);
+    const [dataSource, setDataSource] = useState(null);
     const [isLoading, setIsLoading] = useState(true);
     const {openModal} = useModal();
     const theme = useMantineTheme();
@@ -121,10 +121,8 @@ export default function Students() {
     }
 
     useEffect(() => {
-        if (dataSource.length) setIsLoading(false);
-        getStudentList().then((res) => {
-        });
-    }, [dataSource])
+        getStudentList().then();
+    }, [])
 
     const handleLinkClick = (record) => {
         openFollowupModal({data: record});
@@ -135,7 +133,7 @@ export default function Students() {
             const response = await get(apiConfig.students.list(pageConfig.pageNumber, pageConfig.pageSize));
             if (response.status === 200) {
                 const data = response.data;
-                console.log('data: ', data);
+                setDataSource(data);
             }
         } catch (err) {
             console.error("Error:", err);
@@ -158,7 +156,7 @@ export default function Students() {
             data,
             mode,
             title: 'Student',
-            handleRefresh: getStudentList
+            handleRefresh: () => getStudentList().then()
         });
     }
 
@@ -171,8 +169,21 @@ export default function Students() {
         })
     }
 
-    const handleOnDelete = (data) => {
-        console.log('data: ', data);
+    const handleOnDelete = async (data) => {
+        setIsLoading(true);
+        const {id} = data;
+        try {
+            const response = await del(apiConfig.students.delete, {data: {id}});
+            if (response.status === 200) {
+                utils.showNotifications('Success', 'Operation successful!', 'success', theme);
+                getStudentList().then();
+            }
+        } catch (error) {
+            console.log(error);
+            utils.showNotifications('Error', error.message, 'error', theme);
+        } finally {
+            setIsLoading(false);
+        }
     }
 
     return (
@@ -187,9 +198,9 @@ export default function Students() {
                 showActions={true}
                 canDelete={true}
                 canEdit={true}
-                handleOnAdd={handleOnAddEdit}
-                handleOnEdit={(data) => handleOnAddEdit(data, 'add')}
-                handleOnDelete={(data) => handleOnDelete(data, 'edit')}
+                handleOnAdd={() => handleOnAddEdit(null, "add")}
+                handleOnEdit={(data) => handleOnAddEdit(data, 'edit')}
+                handleOnDelete={(data) => handleOnDelete(data)}
                 onRefresh={getStudentList}
             />
         </Container>

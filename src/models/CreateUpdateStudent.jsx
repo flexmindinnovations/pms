@@ -1,32 +1,66 @@
-import {Container, TextInput, Group, Button, Grid, CloseIcon} from '@mantine/core';
+import {Button, Container, Grid, Group, TextInput, useMantineTheme} from '@mantine/core';
 import {useForm} from "@mantine/form";
+import {useState} from "react";
+import {useApiConfig} from "@context/ApiConfig.jsx";
+import {useHttp} from "@hooks/AxiosInstance.js";
+import {utils} from "../utils.js";
 
-export function CreateUpdateStudent({data = {}, handleCancel, onAddEdit}) {
+export function CreateUpdateStudent({data = {}, mode = 'add', handleCancel, onAddEdit}) {
+    const dummyData = {
+        "name": "Alice Johnson",
+        "instituteName": "Harvard University",
+        "batch": "2026",
+        "phone": "+0012345678901",
+        "gaurdianPhone": "+0012345678902",
+        "email": "alice.johnson@example.com",
+        "gaurdianEmail": "alice.gaurdian@example.com"
+    };
 
+    const formData = data || dummyData;
+    const [disableForm, setDisableForm] = useState(false);
     const form = useForm({
         initialValues: {
-            name: data?.name || '',
-            institute: data?.institute || '',
-            batch: data?.batch || '',
-            phone: data?.phone || '',
-            guardianPhone: data?.guardianPhone || '',
-            email: data?.email || '',
-            guardianEmail: data?.guardianEmail || '',
+            name: formData?.name || '',
+            instituteName: formData?.instituteName || '',
+            batch: formData?.batch || '',
+            phone: formData?.phone || '',
+            gaurdianPhone: formData?.gaurdianPhone || '',
+            email: formData?.email || '',
+            gaurdianEmail: formData?.gaurdianEmail || '',
         },
         validate: {
             name: (value) => (value.length > 0 ? null : 'Name is required'),
-            institute: (value) => (value.length > 0 ? null : 'Institute is required'),
+            instituteName: (value) => (value.length > 0 ? null : 'Institute is required'),
             batch: (value) => (value.length > 0 ? null : 'Batch is required'),
-            phone: (value) => (/^\d{10}$/.test(value) ? null : 'Phone number must be 10 digits'),
-            guardianPhone: (value) => (/^\d{10}$/.test(value) ? null : 'Guardian phone number must be 10 digits'),
+            // phone: (value) => (/^\d{10}$/.test(value) ? null : 'Phone number must be 10 digits'),
+            // gaurdianPhone: (value) => (/^\d{10}$/.test(value) ? null : 'Guardian phone number must be 10 digits'),
             email: (value) => (/^\S+@\S+\.\S+$/.test(value) ? null : 'Invalid email format'),
-            guardianEmail: (value) => (/^\S+@\S+\.\S+$/.test(value) ? null : 'Invalid guardian email format'),
+            gaurdianEmail: (value) => (/^\S+@\S+\.\S+$/.test(value) ? null : 'Invalid guardian email format'),
         },
+        enhanceGetInputProps: () => ({disabled: disableForm}),
     });
 
-    const handleSubmit = (values) => {
-        console.log(values);
-        // You can handle form submission here
+    const [isLoading, setIsLoading] = useState(false);
+    const theme = useMantineTheme();
+    const apiConfig = useApiConfig();
+    const {post, put} = useHttp();
+
+    const handleSubmit = async (values) => {
+        setIsLoading(true);
+        setDisableForm(true);
+        try {
+            const response = mode === 'add' ? await post(apiConfig.students.create, values) : await put(apiConfig.students.update, {id: data.id, ...values});
+            if (response.status === 200) {
+                utils.showNotifications('Success', 'Operation successful!', 'success', theme);
+            }
+        } catch (error) {
+            console.log(error);
+            utils.showNotifications('Error', error.message, 'error', theme);
+        } finally {
+            setIsLoading(false);
+            setDisableForm(false);
+            handleCancel({refresh: true});
+        }
     };
 
     return (
@@ -45,7 +79,7 @@ export function CreateUpdateStudent({data = {}, handleCancel, onAddEdit}) {
                         <TextInput
                             label="Institute"
                             placeholder="Enter institute name"
-                            {...form.getInputProps('institute')}
+                            {...form.getInputProps('instituteName')}
                             required
                         />
                     </Grid.Col>
@@ -72,7 +106,7 @@ export function CreateUpdateStudent({data = {}, handleCancel, onAddEdit}) {
                         <TextInput
                             label="Guardian Phone"
                             placeholder="Enter guardian's phone number"
-                            {...form.getInputProps('guardianPhone')}
+                            {...form.getInputProps('gaurdianPhone')}
                             required
                             type="tel"
                         />
@@ -91,7 +125,7 @@ export function CreateUpdateStudent({data = {}, handleCancel, onAddEdit}) {
                         <TextInput
                             label="Guardian Email"
                             placeholder="Enter guardian's email address"
-                            {...form.getInputProps('guardianEmail')}
+                            {...form.getInputProps('gaurdianEmail')}
                             required
                             type="email"
                         />
@@ -105,7 +139,7 @@ export function CreateUpdateStudent({data = {}, handleCancel, onAddEdit}) {
                     >
                         Cancel
                     </Button>
-                    <Button type="submit">
+                    <Button type="submit" disabled={isLoading} loading={isLoading}>
                         Submit
                     </Button>
                 </Group>

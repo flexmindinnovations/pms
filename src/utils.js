@@ -5,15 +5,14 @@ export const utils = {
     showNotifications: (title, message, variant = 'success' | 'error', theme) => (
         notifications.show({
             title: title,
-            color: theme.white,
+            color:  variant == 'success' ? theme.colors.green[9] : theme.colors.red[9],
             message: message,
+            withCloseButton: false,
+            withBorder: true,
             styles: {
-                root: {
-                    backgroundColor: variant === 'success' ? theme.colors.green[9] : theme.colors.red[9]
-                },
-                title: {color: theme.white, fontSize: theme.fontSizes.lg},
-                body: {color: theme.white},
-                icon: {color: theme.white},
+                title: {color: variant == 'success' ? theme.colors.green[9] : theme.colors.red[9], fontSize: theme.fontSizes.lg},
+                body: {color: variant == 'success' ? theme.colors.green[9] : theme.colors.red[9]},
+                icon: {color: variant == 'success' ? theme.colors.green[9] : theme.colors.red[9]},
             }
         })
     ),
