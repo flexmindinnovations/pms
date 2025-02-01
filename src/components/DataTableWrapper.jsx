@@ -120,7 +120,7 @@ export function DataTableWrapper({
 
     return (
         <div className="h-full w-full flex flex-col items-start justify-start gap-4">
-            <div className={styles.toolbar}>
+            <div className={`${styles.toolbar} w-full`}>
                 <div className="search-filter flex items-center justify-between w-full gap-4">
                     <div style={{position: "relative", width: "50%"}}>
                         <TextInput
