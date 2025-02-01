@@ -21,6 +21,7 @@ export function AuthProvider({children}) {
     const logout = () => {
         sessionStorage.removeItem("token");
         sessionStorage.removeItem("userID");
+        sessionStorage.clear();
         setIsLoggedIn(false);
         navigate("/login");
     };
