@@ -37,8 +37,12 @@ html, body, #root {
 }
 
 .gradientText {
-    @apply text-center text-transparent bg-clip-text bg-gradient-to-r from-purple-400 via-pink-500 to-red-600;
+    text-align: center;
+    color: transparent;
+    background-clip: text;
+    background-image: linear-gradient(to right, #9b4dca, #ec4899, #ef4444);
 }
+
 
 .mantine-datatable-scroll-area {
     overflow: auto !important;

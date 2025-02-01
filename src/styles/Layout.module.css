@@ -1,8 +1,11 @@
-@import 'tailwindcss';
-
-
 .navbarContainer {
-    @apply relative flex flex-col w-full gap-2 my-4;
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    gap: 0.5rem;
+    margin-top: 1rem;
+    margin-bottom: 1rem;
 }
 
 .navbarItemWrapper {
@@ -11,13 +14,47 @@
 }
 
 .navbarItem {
-    @apply max-w-[60%] md:max-w-[90%] lg:max-w-[85%] xl:max-w-[85%] 2xl:max-w-[85%] mr-auto rounded-r-full w-full m-0;
+    max-width: 60%;
+    margin-right: auto;
+    border-radius: 9999px;
+    width: 100%;
+    margin: 0;
+}
+
+@media (min-width: 768px) {
+    .navbarItem {
+        max-width: 90%;
+    }
+}
+
+@media (min-width: 1024px) {
+    .navbarItem {
+        max-width: 85%;
+    }
+}
+
+@media (min-width: 1280px) {
+    .navbarItem {
+        max-width: 85%;
+    }
+}
+
+@media (min-width: 1536px) {
+    .navbarItem {
+        max-width: 85%;
+    }
 }
 
 .activeItem {
-    @apply bg-[var(--mantine-color-brand-9)] text-white;
+    background-color: var(--mantine-color-brand-9);
+    color: white;
 }
 
 .inactiveItem {
-    @apply hover:bg-gray-200 hover:text-[var(--mantine-color-brand-9)];
+    transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+.inactiveItem:hover {
+    background-color: #e2e8f0;
+    color: var(--mantine-color-brand-9);
 }
