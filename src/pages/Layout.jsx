@@ -82,7 +82,7 @@ export default function Layout() {
             pl={0}
         >
             <AppShell.Header>
-                <Group h='100%' px='20'>
+                <Group h='100%' px='14'>
                     <Burger
                         opened={opened}
                         onClick={toggle}
