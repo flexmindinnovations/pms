@@ -29,119 +29,115 @@ export default function FollowUp() {
     const theme = useMantineTheme();
     const {get, del} = useHttp();
     const apiConfig = useApiConfig();
-    const columns = useMemo(() =>
-                [
-                    {
-                        accessor: 'campaignId',
-                        title: 'Campaign ID',
-                        minWidth: 120,
-                        render: (record) => (
-                            <div className={`w-full text-left px-4`}>
-                                <Anchor c={theme.colors.blue[6]} size={'xs'}
-                                        onClick={() => handleLinkClick(record, 'campaign')}>
-                                    {record.campaignId}
-                                </Anchor>
-                            </div>
-                        ),
-                    },
-                    {
-                        accessor: 'studentId',
-                        title: 'Student ID',
-                        minWidth: 120,
-                        render: (record) => (
-                            <div className={`w-full text-left px-4`}>
-                                <Anchor c={theme.colors.blue[6]} size={'xs'} onClick={() => handleLinkClick(record, 'student')}>
-                                    {record.studentId}
-                                </Anchor>
-                            </div>
-                        ),
-                    },
-                    {
-                        accessor: 'recoveryAgentId',
-                        title: 'Recovery Agent ID',
-                        minWidth: 150,
-                        render: (record) => (
-                            <div className={`w-full text-left px-4`}>
-                                <Anchor c={theme.colors.blue[6]} size={'xs'}
-                                        onClick={() => handleLinkClick(record, 'recoveryAgent')}>
-                                    {record.recoveryAgentId}
-                                </Anchor>
-                            </div>
-                        ),
-                    },
-                    {
-                        accessor: 'commitmentAmount',
-                        title: 'Commitment Amount',
-                        minWidth: 160,
-                        render:
-                            (record) => (
-                                <p className={`px-4 text-start`}>${record.commitmentAmount.toFixed(2)}</p>
-                            ),
-                    },
-                    {
-                        accessor: 'commitmentDate',
-                        title:
-                            'Commitment Date',
-                        minWidth:
-                            180,
-                        render:
-                            (record) => (
-                                <p className={`px-4 text-start`}>{dayjs(record.commitmentDate).format('DD/MM/YYYY')}</p>
-                            ),
-                    }
-                    ,
-                    {
-                        accessor: 'remarks',
-                        title:
-                            'Remarks',
-                        minWidth:
-                            200,
-                        render:
-                            (record) => (
-                                <p className={`px-4 text-start`}>{record.remarks || 'N/A'}</p>
-                            ),
-                    }
-                    ,
-                    {
-                        accessor: 'timestamp',
-                        title:
-                            'Timestamp',
-                        minWidth:
-                            180,
-                        render:
-                            (record) => (
-                                <p className={`px-4 text-start`}>{new Date(record.timestamp).toLocaleString()}</p>
-                            ),
-                    }
-                    ,
-                    {
-                        accessor: 'noOfCalls',
-                        title:
-                            'No Of Calls',
-                        minWidth:
-                            120,
-                        render:
-                            (record) => (
-                                <p className={`px-4 text-start`}>{record.noOfCalls || 0}</p>
-                            ),
-                    }
-                    ,
-                    {
-                        accessor: 'lastCaller',
-                        title:
-                            'Last Caller',
-                        minWidth:
-                            180,
-                        render:
-                            (record) => (
-                                <p className={`px-4 text-start`}>{record.lastCaller || 'N/A'}</p>
-                            ),
-                    }
-                    ,
-                ],
-            []
-        )
-    ;
+    const columns = useMemo(() => [
+        {
+            accessor: 'campaignId',
+            title: 'Campaign ID',
+            minWidth: 120,
+            render: (record) => (
+                <div className={`w-full text-left px-4`}>
+                    <Anchor c={theme.colors.blue[6]} size={'xs'}
+                            onClick={() => handleLinkClick(record, 'campaign')}>
+                        {record.campaignId}
+                    </Anchor>
+                </div>
+            ),
+        },
+        {
+            accessor: 'studentId',
+            title: 'Student ID',
+            minWidth: 120,
+            render: (record) => (
+                <div className={`w-full text-left px-4`}>
+                    <Anchor c={theme.colors.blue[6]} size={'xs'} onClick={() => handleLinkClick(record, 'student')}>
+                        {record.studentId}
+                    </Anchor>
+                </div>
+            ),
+        },
+        {
+            accessor: 'recoveryAgentId',
+            title: 'Recovery Agent ID',
+            minWidth: 150,
+            render: (record) => (
+                <div className={`w-full text-left px-4`}>
+                    <Anchor c={theme.colors.blue[6]} size={'xs'}
+                            onClick={() => handleLinkClick(record, 'recoveryAgent')}>
+                        {record.recoveryAgentId}
+                    </Anchor>
+                </div>
+            ),
+        },
+        {
+            accessor: 'commitmentAmount',
+            title: 'Commitment Amount',
+            minWidth: 160,
+            render:
+                (record) => (
+                    <p className={`px-4 text-start`}>${record.commitmentAmount.toFixed(2)}</p>
+                ),
+        },
+        {
+            accessor: 'commitmentDate',
+            title:
+                'Commitment Date',
+            minWidth:
+                180,
+            render:
+                (record) => (
+                    <p className={`px-4 text-start`}>{dayjs(record.commitmentDate).format('DD/MM/YYYY')}</p>
+                ),
+        }
+        ,
+        {
+            accessor: 'remarks',
+            title:
+                'Remarks',
+            minWidth:
+                200,
+            render:
+                (record) => (
+                    <p className={`px-4 text-start`}>{record.remarks || 'N/A'}</p>
+                ),
+        }
+        ,
+        {
+            accessor: 'timestamp',
+            title:
+                'Timestamp',
+            minWidth:
+                180,
+            render:
+                (record) => (
+                    <p className={`px-4 text-start`}>{new Date(record.timestamp).toLocaleString()}</p>
+                ),
+        }
+        ,
+        {
+            accessor: 'noOfCalls',
+            title:
+                'No Of Calls',
+            minWidth:
+                120,
+            render:
+                (record) => (
+                    <p className={`px-4 text-start`}>{record.noOfCalls || 0}</p>
+                ),
+        }
+        ,
+        {
+            accessor: 'lastCaller',
+            title:
+                'Last Caller',
+            minWidth:
+                180,
+            render:
+                (record) => (
+                    <p className={`px-4 text-start`}>{record.lastCaller || 'N/A'}</p>
+                ),
+        }
+        ,
+    ], []);
 
     useEffect(() => {
         getFollowUpList().then();
@@ -171,11 +167,8 @@ export default function FollowUp() {
                 setDataSource(data);
             }
         } catch (err) {
-            console.error("Error:", err);
-            utils.showNotifications('Error',
-                <p className={`text-white`}>{err.message}</p>,
-                'error',
-                theme);
+            const {message} = err;
+            utils.showNotifications('Error', message, 'error', theme);
         } finally {
             setIsLoading(false);
         }
@@ -195,9 +188,9 @@ export default function FollowUp() {
         });
     }
 
-    const openDetailsModal = ({data = {}, component, title}) => {
+    const openDetailsModal = ({data = {}, Component, title}) => {
         openModal({
-            Component: component,
+            Component,
             data,
             title,
         })
@@ -213,8 +206,8 @@ export default function FollowUp() {
                 getFollowUpList().then();
             }
         } catch (error) {
-            console.log(error);
-            utils.showNotifications('Error', error.message, 'error', theme);
+            const {message} = error;
+            utils.showNotifications('Error', message, 'error', theme);
         } finally {
             setIsLoading(false);
         }

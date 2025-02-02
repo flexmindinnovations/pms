@@ -91,11 +91,8 @@ export default function RecoveryCampaign() {
                 setDataSource(data);
             }
         } catch (err) {
-            console.error("Error:", err);
-            utils.showNotifications('Error',
-                <p className={`text-white`}>{err.message}</p>,
-                'error',
-                theme);
+            const {message} = err;
+            utils.showNotifications('Error', message, 'error', theme);
         } finally {
             setIsLoading(false);
         }

@@ -93,7 +93,9 @@ export default function Students() {
         openFollowupModal({data: record});
     }
 
-    const getStudentList = useCallback(async (pageNumber = utils.pageConfig.pageNumber, pageSize = utils.pageConfig.pageSize) => {
+    const getStudentList = useCallback(async (
+        pageNumber = utils.pageConfig.pageNumber,
+        pageSize = utils.pageConfig.pageSize) => {
         try {
             const response = await get(apiConfig.students.list(pageNumber, pageSize));
             if (response.status === 200) {
@@ -101,11 +103,8 @@ export default function Students() {
                 setDataSource(data);
             }
         } catch (err) {
-            console.error("Error:", err);
-            utils.showNotifications('Error',
-                <p className={`text-white`}>{err.message}</p>,
-                'error',
-                theme);
+            const {message} = err;
+            utils.showNotifications('Error', message, 'error', theme);
         } finally {
             setIsLoading(false);
         }
