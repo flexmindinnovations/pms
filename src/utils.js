@@ -24,6 +24,9 @@ export const utils = {
         pageSize: 10,
     },
     colPros: {
+        noWrap: true,
+        textAlign: 'center',
+        width: 'auto',
         height: 50,
     },
     menuItems: [

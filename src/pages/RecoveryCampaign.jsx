@@ -10,94 +10,71 @@ import {useApiConfig} from "@context/ApiConfig.jsx";
 import {utils} from "../utils.js";
 
 export default function RecoveryCampaign() {
-    /**
-     * id
-     * Name
-     * Start Date
-     * End Date
-     * Status => Active, Inactive
-     * Description
-     * LastTallySyncTimestamp
-     * */
-
-    const colPros = {
-        height: 50,
-    }
-
     const [isLoading, setIsLoading] = useState(false);
     const {openModal} = useModal();
-
     const [dataSource, setDataSource] = useState(null);
     const theme = useMantineTheme();
-    const {get, post, del} = useHttp();
+    const {get, del} = useHttp();
     const apiConfig = useApiConfig();
 
     const columns = useMemo(() => [
-        // {
-        //     accessor: 'id',
-        //     title: 'ID',
-        //     width: 40,
-        //     style: {padding: '10px'},
-        //     ...colPros
-        // },
         {
             accessor: 'name',
             title: 'Name',
-            width: 200,
-            style: {padding: '10px'},
-            ...colPros
+            minWidth: 200,
+            ...utils.colPros,
+            render: (record) => (
+                <p className={`px-4 text-start`}>{record.name}</p>
+            ),
         },
         {
             accessor: 'startDate',
             title: 'Start Date',
-            width: 60,
-            style: {padding: '10px'},
-            render: (record) => dayjs(record.startDate).format('DD/MM/YYYY'),
-            ...colPros
+            minWidth: 60,
+            ...utils.colPros,
+            render: (record) => <p className={`px-4 text-start`}>{dayjs(record.startDate).format('DD/MM/YYYY')}</p>,
         },
         {
             accessor: 'endDate',
             title: 'End Date',
-            width: 60,
-            style: {padding: '10px'},
-            render: (record) => dayjs(record.endDate).format('DD/MM/YYYY'),
-            ...colPros
+            minWidth: 60,
+            ...utils.colPros,
+            render: (record) => <p className={`px-4 text-start`}>{dayjs(record.endDate).format('DD/MM/YYYY')}</p>,
         },
         {
             accessor: 'status',
             title: 'Status',
-            width: 40,
-            style: {padding: '10px'},
+            minWidth: 40,
+            ...utils.colPros,
             render: (record) => (
-                <Card p={2} py={4} shadow={'lg'} c={record?.status === 'Active' ? theme.colors.green[9] : theme.colors.red[9]}
-                      withBorder
-                      bg={record?.status === 'Active' ? theme.colors.green[1] : theme.colors.red[1]}
-                      className={`flex w-full items-center justify-center`}>
-                    <Text size={'xs'} fw={'bold'}>{record?.status}</Text>
-                </Card>
+                <div className={`px-4`}>
+                    <Card p={2} py={4} c={record?.status === 'Active' ? theme.colors.green[9] : theme.colors.red[9]}
+                          withBorder
+                          bg={record?.status === 'Active' ? theme.colors.green[1] : theme.colors.red[1]}
+                          className={`flex w-full items-center justify-center`}>
+                        <Text size={'xs'} fw={'bold'}>{record?.status}</Text>
+                    </Card>
+                </div>
             ),
-            ...colPros
         },
         {
             accessor: 'LastTallySyncTimestamp',
             title: 'Last TallySync Timestamp',
-            width: 100,
-            style: {padding: '10px'},
-            ...colPros
+            ...utils.colPros,
+            minWidth: 100,
         },
         {
             accessor: 'tallySync',
             title: 'Tally Sync',
-            width: 50,
-            style: {padding: '10px'},
+            minWidth: 50,
+            ...utils.colPros,
             render: () => (
                 <div className={`w-full flex items-center justify-center`}>
-                    <ActionIcon>
-                        <RefreshCw size={16}/>
+                    <ActionIcon size={"md"}>
+                        <RefreshCw size={14}/>
                     </ActionIcon>
                 </div>
             ),
-            ...colPros
         }
     ], [])
 

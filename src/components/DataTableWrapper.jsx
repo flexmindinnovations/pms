@@ -101,10 +101,14 @@ export function DataTableWrapper({
             {
                 accessor: "actions",
                 title: "Action",
-                width: 60,
-                maxWidth: 60,
+                width: 80,
+                textAlign: 'center',
+                padding: 0,
+                titleStyle: {
+                    backgroundColor: theme.white
+                },
                 render: (record) => (
-                    <Group gap={8} wrap="nowrap" justify="center">
+                    <Group gap={8} p={0} wrap="nowrap" justify="center" className={`bg-white min-h-[40px] w-full h-full`}>
                         {canEdit && (
                             <Tooltip label="Edit">
                                 <SquarePen size={16} style={{cursor: "pointer"}} onClick={() => handleOnEdit(record)}/>
@@ -140,7 +144,7 @@ export function DataTableWrapper({
     };
 
     return (
-        <div className="h-full w-full flex flex-col items-start justify-start gap-4">
+        <div className="h-full w-full flex flex-col items-start justify-start overflow-auto gap-4">
             <div className={`${styles.toolbar} w-full`}>
                 <div className="search-filter flex items-center justify-between w-full gap-4">
                     <div style={{position: "relative", width: "50%"}}>
@@ -225,7 +229,10 @@ export function DataTableWrapper({
                     root: {
                         width: "100%",
                         minHeight: '25vh'
-                    }
+                    },
+                    td: {
+                        padding: 0,
+                    },
                 }}
             />
         </div>

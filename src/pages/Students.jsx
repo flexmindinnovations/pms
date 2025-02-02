@@ -16,28 +16,13 @@ export default function Students() {
     const {get, post, del} = useHttp();
     const apiConfig = useApiConfig();
     const columns = useMemo(() => [
-        // {
-        //     accessor: 'id',
-        //     title: 'ID',
-        //     width: 40,
-        //     style: {padding: '10px'},
-        //     ...colPros,
-        //     render: (record) => (
-        //         <div className={`w-full, text-center`}>
-        //             <Anchor c={theme.colors.blue[6]} onClick={() => handleIdClick(record)}>
-        //                 {record.id}
-        //             </Anchor>
-        //         </div>
-        //     )
-        // },
         {
             accessor: 'name',
             title: 'Name',
-            width: 150,
-            style: {padding: '10px'},
+            minWidth: 150,
             ...utils.colPros,
             render: (record) => (
-                <div className={`w-full, text-left`}>
+                <div className={`w-full text-left px-4`}>
                     <Anchor c={theme.colors.blue[6]} size={'xs'} onClick={() => handleLinkClick(record)}>
                         {record.name}
                     </Anchor>
@@ -47,44 +32,56 @@ export default function Students() {
         {
             accessor: 'instituteName',
             title: 'Institute',
-            width: 200,
-            style: {padding: '10px'},
+            minWidth: 200,
             ...utils.colPros,
+            render: (record) => (
+                <p className={`px-4 text-start`}>{record.instituteName}</p>
+            ),
         },
         {
             accessor: 'batch',
             title: 'Batch',
-            width: 100,
-            style: {padding: '10px'},
+            minWidth: 100,
             ...utils.colPros,
+            render: (record) => (
+                <p className={`px-4 text-start`}>{record.batch}</p>
+            ),
         },
         {
             accessor: 'phone',
             title: 'Phone',
-            width: 120,
-            style: {padding: '10px'},
+            minWidth: 120,
             ...utils.colPros,
+            render: (record) => (
+                <p className={`px-4 text-start`}>{record.phone}</p>
+            ),
         },
         {
             accessor: 'gaurdianPhone',
             title: 'Guardian Phone',
-            width: 140,
-            style: {padding: '10px'},
+            minWidth: 140,
             ...utils.colPros,
+            render: (record) => (
+                <p className={`px-4 text-start`}>{record.gaurdianPhone}</p>
+            ),
         },
         {
             accessor: 'email',
             title: 'Email',
-            width: 200,
-            style: {padding: '10px'},
+            minWidth: 200,
             ...utils.colPros,
+            render: (record) => (
+                <p className={`px-4 text-start`}>{record.email}</p>
+            ),
         },
         {
             accessor: 'gaurdianEmail',
             title: 'Guardian Email',
-            width: 200,
-            style: {padding: '10px'},
+            minWidth: 200,
             ...utils.colPros,
+            render: (record) => (
+                <p className={`px-4 text-start`}>{record.gaurdianEmail}</p>
+            ),
         },
     ], [])
 

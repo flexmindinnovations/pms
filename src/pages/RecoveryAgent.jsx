@@ -7,43 +7,21 @@ import {useApiConfig} from "@context/ApiConfig.jsx";
 import {utils} from "../utils.js";
 import {CreateUpdateRecoveryAgent} from "../models/CreateUpdateRecoveryAgent.jsx";
 
-export default function RecoveryAgent({data}) {
-
-    /*
-    * Id
-    * Name
-    * Email
-    * Contact
-    * */
+export default function RecoveryAgent() {
     const [dataSource, setDataSource] = useState(null);
     const [isLoading, setIsLoading] = useState(true);
     const {openModal} = useModal();
     const theme = useMantineTheme();
-    const {get, post, del} = useHttp();
+    const {get, del} = useHttp();
     const apiConfig = useApiConfig();
     const columns = useMemo(() => [
-        // {
-        //     accessor: 'id',
-        //     title: 'ID',
-        //     width: 40,
-        //     style: {padding: '10px'},
-        //     ...colPros,
-        //     render: (record) => (
-        //         <div className={`w-full, text-center`}>
-        //             <Anchor c={theme.colors.blue[6]} onClick={() => handleIdClick(record)}>
-        //                 {record.id}
-        //             </Anchor>
-        //         </div>
-        //     )
-        // },
         {
             accessor: 'name',
             title: 'Name',
-            width: 150,
-            style: {padding: '10px'},
+            minWidth: 150,
             ...utils.colPros,
             render: (record) => (
-                <div className={`w-full, text-left`}>
+                <div className={`w-full text-start px-4`}>
                     <Anchor c={theme.colors.blue[6]} size={'xs'} onClick={() => handleLinkClick(record)}>
                         {record.name}
                     </Anchor>
@@ -53,16 +31,20 @@ export default function RecoveryAgent({data}) {
         {
             accessor: 'email',
             title: 'Email',
-            width: 200,
-            style: {padding: '10px'},
-            ...utils.colPros
+            minWidth: 200,
+            ...utils.colPros,
+            render: (record) => (
+                <p className={`px-4 text-start`}>{record.email}</p>
+            ),
         },
         {
             accessor: 'contact',
             title: 'Contact',
-            width: 200,
-            style: {padding: '10px'},
-            ...utils.colPros
+            minWidth: 200,
+            ...utils.colPros,
+            render: (record) => (
+                <p className={`px-4 text-start`}>{record.contact}</p>
+            ),
         },
     ], [])
 
@@ -103,6 +85,10 @@ export default function RecoveryAgent({data}) {
             title: 'Recovery Agent',
             handleRefresh: () => getRecoveryAgentList().then()
         });
+    }
+
+    const handleLinkClick = (record) => {
+
     }
 
     const handleOnDelete = async (data) => {

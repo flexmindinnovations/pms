@@ -43,6 +43,9 @@ html, body, #root {
     background-image: linear-gradient(to right, #9b4dca, #ec4899, #ef4444);
 }
 
+table tbody tr td {
+    padding: 0 !important;
+}
 
 .mantine-datatable-scroll-area {
     overflow: auto !important;

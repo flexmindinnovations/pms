@@ -18,15 +18,15 @@ import {utils} from "../utils.js";
 import styles from '@styles/Layout.module.css';
 import {LogOut} from 'lucide-react';
 import {useAuth} from "@context/AuthContext.jsx";
-import { useEncrypt } from "@hooks/EncryptData.js";
+import {useEncrypt} from "@hooks/EncryptData.js";
 
 export default function Layout() {
     const [opened, {toggle}] = useDisclosure()
     const [menuItems, setMenuItems] = useState([])
     const theme = useMantineTheme();
     const {pathname} = useLocation()
-    const { logout } = useAuth();
-    const { getEncryptedData } = useEncrypt();
+    const {logout} = useAuth();
+    const {getEncryptedData} = useEncrypt();
 
     useEffect(() => {
         let _menuItems = utils.menuItems;
@@ -50,6 +50,7 @@ export default function Layout() {
             active: item.id === menuItem.id
         }))
         setMenuItems(updateMenuItems)
+        toggle();
     }
 
     if (!menuItems.length) {
