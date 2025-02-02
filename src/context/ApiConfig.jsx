@@ -22,6 +22,13 @@ const contextConfig = {
         create: `${endpoint}/RecoveryCampaign`,
         update: `${endpoint}/RecoveryCampaign`,
         delete: `${endpoint}/RecoveryCampaign`,
+    },
+    followUp: {
+        list: (pageNumber = 1, pageSize = 1) => `${endpoint}/FollowUp/List?PageNumber=${pageNumber}&PageSize=${pageSize}`,
+        getById: (id) => `${endpoint}/FollowUp?Id=${id}`,
+        create: `${endpoint}/FollowUp`,
+        update: `${endpoint}/FollowUp`,
+        delete: `${endpoint}/FollowUp`,
     }
 }
 

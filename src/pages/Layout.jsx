@@ -64,13 +64,19 @@ export default function Layout() {
     return (
         <AppShell
             header={{height: 60}}
-            footer={{height: 60}}
+            footer={{height: 10}}
             navbar={{
-                width: 250,
+                width: 245,
                 breakpoint: 'sm',
                 collapsed: {mobile: !opened}
             }}
-            styles={{main: {height: '100vh', display: 'flex', flexDirection: 'column'}}}
+            styles={{
+                main: {
+                    height: '100vh',
+                    display: 'flex',
+                    flexDirection: 'column'
+                }
+            }}
             padding='md'
             layout='alt'
             pl={0}

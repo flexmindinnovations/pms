@@ -39,7 +39,7 @@ export function DataTableWrapper({
                                  }) {
     const [pagination, setPagination] = useState({
         page: dataSource?.pageNumber || 1,
-        pageSize: 10,
+        pageSize: 15,
         sortStatus: {columnAccessor: "", direction: ""},
     });
     const [searchQuery, setSearchQuery] = useState("");

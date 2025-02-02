@@ -29,10 +29,17 @@ const theme = createTheme({
                 size: 'xl'
             }
         }),
+        Container: {
+            styles: () => ({
+                root: {
+                    height: '100%'
+                }
+            })
+        },
         Button: {
             defaultProps: {
                 radius: 'xl',
-                loaderProps: {h: '48px', w: '48px'}
+                loaderProps: {h: '48px', w: '48px'},
             },
         },
         Tooltip: {
