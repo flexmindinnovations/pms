@@ -1,11 +1,13 @@
 import {ActionIcon, Card, Container, Text, useMantineTheme} from "@mantine/core";
-import {useEffect, useMemo, useState} from "react";
+import {useCallback, useEffect, useMemo, useState} from "react";
 import dayjs from "dayjs";
 import {RefreshCw} from 'lucide-react';
 import {DataTableWrapper} from "@components/DataTableWrapper.jsx";
-import {CreateUpdateStudent} from "../models/CreateUpdateStudent.jsx";
 import {useModal} from "@hooks/AddEditModal.jsx";
 import {CreateUpdateCampaign} from "../models/CreateUpdateCampaign.jsx";
+import {useHttp} from "@hooks/AxiosInstance.js";
+import {useApiConfig} from "@context/ApiConfig.jsx";
+import {utils} from "../utils.js";
 
 export default function RecoveryCampaign() {
     /**
@@ -27,17 +29,19 @@ export default function RecoveryCampaign() {
 
     const [dataSource, setDataSource] = useState(null);
     const theme = useMantineTheme();
+    const {get, post, del} = useHttp();
+    const apiConfig = useApiConfig();
 
     const columns = useMemo(() => [
+        // {
+        //     accessor: 'id',
+        //     title: 'ID',
+        //     width: 40,
+        //     style: {padding: '10px'},
+        //     ...colPros
+        // },
         {
-            accessor: 'recoveryCampaignId',
-            title: 'ID',
-            width: 40,
-            style: {padding: '10px'},
-            ...colPros
-        },
-        {
-            accessor: 'recoveryCampaignName',
+            accessor: 'name',
             title: 'Name',
             width: 200,
             style: {padding: '10px'},
@@ -65,8 +69,11 @@ export default function RecoveryCampaign() {
             width: 40,
             style: {padding: '10px'},
             render: (record) => (
-                <Card p={0} className={`flex w-full items-center justify-center`}>
-                    <Text size={'xs'} fw={'bold'}>{record?.status === 'active' ? 'Active' : 'Inactive'}</Text>
+                <Card p={2} py={4} shadow={'lg'} c={record?.status === 'Active' ? theme.colors.green[9] : theme.colors.red[9]}
+                      withBorder
+                      bg={record?.status === 'Active' ? theme.colors.green[1] : theme.colors.red[1]}
+                      className={`flex w-full items-center justify-center`}>
+                    <Text size={'xs'} fw={'bold'}>{record?.status}</Text>
                 </Card>
             ),
             ...colPros
@@ -94,45 +101,58 @@ export default function RecoveryCampaign() {
         }
     ], [])
 
-    const generateDummyData = () => {
-        const statuses = ['active', 'inactive'];
-        return Array.from({length: 10}).map((_, index) => ({
-            recoveryCampaignId: index + 1,
-            recoveryCampaignName: `Campaign ${index + 1}`,
-            startDate: dayjs().subtract(index, 'days').format('YYYY-MM-DD'),
-            endDate: dayjs().add(index, 'days').format('YYYY-MM-DD'),
-            status: statuses[index % 2], // Alternating active/inactive
-            LastTallySyncTimestamp: dayjs().subtract(index, 'hours').format('YYYY-MM-DD HH:mm:ss'),
-        }));
-    };
-
     useEffect(() => {
-        const data = generateDummyData();
-        setDataSource(data);
+        getRecoveryCampaignList().then();
     }, [])
 
-
-    const getRecoveryCampaign = async () => {
-
-    }
+    const getRecoveryCampaignList = useCallback(async (pageNumber = utils.pageConfig.pageNumber, pageSize = utils.pageConfig.pageSize) => {
+        setIsLoading(true);
+        try {
+            const response = await get(apiConfig.recoveryCampaign.list(pageNumber, pageSize));
+            if (response.status === 200) {
+                const data = response.data;
+                setDataSource(data);
+            }
+        } catch (err) {
+            console.error("Error:", err);
+            utils.showNotifications('Error',
+                <p className={`text-white`}>{err.message}</p>,
+                'error',
+                theme);
+        } finally {
+            setIsLoading(false);
+        }
+    }, [])
 
     const handleOnAddEdit = (data, mode) => {
         openAddEditModal({data, mode});
     }
 
     const openAddEditModal = ({data = {}, mode = 'add'}) => {
-        console.log('data: ', data)
         openModal({
             Component: CreateUpdateCampaign,
             data,
             mode,
             title: 'Recovery Campaign',
-            handleRefresh: getRecoveryCampaign
+            handleRefresh: getRecoveryCampaignList
         });
     }
 
-    const handleOnDelete = (data) => {
-        console.log('data: ', data);
+    const handleOnDelete = async (data) => {
+        const {id} = data
+        setIsLoading(true);
+        try {
+            const response = await del(apiConfig.recoveryCampaign.delete, {data: {id}});
+            if (response.status === 200) {
+                utils.showNotifications('Success', 'Operation successful!', 'success', theme);
+                getRecoveryCampaignList().then();
+            }
+        } catch (err) {
+            console.log(err);
+            utils.showNotifications('Error', err.message, 'error', theme);
+        } finally {
+            setIsLoading(false);
+        }
     }
 
     return (
@@ -140,16 +160,16 @@ export default function RecoveryCampaign() {
             <DataTableWrapper
                 loading={isLoading}
                 showAddButton={true}
-                id={'recoveryCampaignId'}
+                id={'id'}
                 addTitle={'Recovery Campaign'}
                 columns={columns}
-                canEdit={true}
+                canEdit={false}
                 canDelete={true}
                 dataSource={dataSource}
-                handleOnAdd={handleOnAddEdit}
+                handleOnAdd={() => handleOnAddEdit(null)}
                 handleOnEdit={(data) => handleOnAddEdit(data, 'add')}
                 handleOnDelete={(data) => handleOnDelete(data, 'edit')}
-                onRefresh={getRecoveryCampaign}
+                onRefresh={getRecoveryCampaignList}
             />
         </Container>
     )

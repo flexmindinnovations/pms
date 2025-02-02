@@ -1,7 +1,8 @@
-import { DataTable } from "mantine-datatable";
+import {DataTable} from "mantine-datatable";
 import {
     ActionIcon,
-    CloseButton, CloseIcon,
+    CloseButton,
+    CloseIcon,
     Group,
     Text,
     TextInput,
@@ -9,21 +10,22 @@ import {
     useMantineColorScheme,
     useMantineTheme,
 } from "@mantine/core";
-import { useCallback, useEffect, useMemo, useState } from "react";
-import {
-    Plus,
-    RefreshCcw,
-    Search,
-    SquarePen,
-    Trash2,
-} from "lucide-react";
-import { modals } from "@mantine/modals";
+import {useCallback, useEffect, useMemo, useState} from "react";
+import {Plus, RefreshCcw, Search, SquarePen, Trash2,} from "lucide-react";
+import {modals} from "@mantine/modals";
 import styles from "@styles/DataTableWrapper.module.css";
+import {data} from "react-router-dom";
 
 export function DataTableWrapper({
                                      loading,
                                      columns = [],
-                                     dataSource = { items: [], totalCount: 0, pageNumber: 1, hasPreviousPage: false, hasNextPage: false },
+                                     dataSource = {
+                                         items: [],
+                                         totalCount: 0,
+                                         pageNumber: 1,
+                                         hasPreviousPage: false,
+                                         hasNextPage: false
+                                     },
                                      showAddButton = false,
                                      addTitle = "",
                                      id,
@@ -38,12 +40,12 @@ export function DataTableWrapper({
     const [pagination, setPagination] = useState({
         page: dataSource?.pageNumber || 1,
         pageSize: 10,
-        sortStatus: { columnAccessor: "", direction: "" },
+        sortStatus: {columnAccessor: "", direction: ""},
     });
     const [searchQuery, setSearchQuery] = useState("");
 
     const theme = useMantineTheme();
-    const { colorScheme } = useMantineColorScheme();
+    const {colorScheme} = useMantineColorScheme();
     const themeMode = colorScheme === "auto"
         ? window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light"
         : colorScheme;
@@ -58,7 +60,7 @@ export function DataTableWrapper({
                 String(value || "").toLowerCase().includes(query)
             )
         ) || [];
-    }, [searchQuery, dataSource?.items]);
+    }, [searchQuery, dataSource]);
 
     useEffect(() => {
         if (!dataSource) return;
@@ -69,10 +71,14 @@ export function DataTableWrapper({
             hasPreviousPage: !!dataSource.hasPreviousPage,
             hasNextPage: !!dataSource.hasNextPage,
         }));
+        filteredData.slice(
+            (pagination.page - 1) * pagination.pageSize,
+            pagination.page * pagination.pageSize
+        )
     }, [dataSource]);
 
     const handleSortChange = useCallback((sortStatus) => {
-        setPagination((prev) => ({ ...prev, sortStatus }));
+        setPagination((prev) => ({...prev, sortStatus}));
     }, []);
 
     const openDeleteModal = useCallback((record) => {
@@ -80,9 +86,9 @@ export function DataTableWrapper({
             title: "Delete Confirm",
             centered: true,
             children: <Text size="sm">Are you sure you want to delete this?</Text>,
-            labels: { confirm: "Delete", cancel: "Cancel" },
-            confirmProps: { color: 'red', radius: radius, icon: <Trash2 size={16}/> },
-            cancelProps: { radius: radius, icon: <CloseIcon size={16}/> },
+            labels: {confirm: "Delete", cancel: "Cancel"},
+            confirmProps: {color: 'red', radius: radius, icon: <Trash2 size={16}/>},
+            cancelProps: {radius: radius, icon: <CloseIcon size={16}/>},
             onConfirm: () => handleOnDelete(record),
         });
     }, [handleOnDelete]);
@@ -96,18 +102,19 @@ export function DataTableWrapper({
                 accessor: "actions",
                 title: "Action",
                 width: 60,
+                maxWidth: 60,
                 render: (record) => (
                     <Group gap={8} wrap="nowrap" justify="center">
                         {canEdit && (
                             <Tooltip label="Edit">
-                                <SquarePen size={16} style={{ cursor: "pointer" }} onClick={() => handleOnEdit(record)} />
+                                <SquarePen size={16} style={{cursor: "pointer"}} onClick={() => handleOnEdit(record)}/>
                             </Tooltip>
                         )}
                         {canDelete && (
                             <Tooltip label="Delete">
                                 <Trash2
                                     size={16}
-                                    style={{ cursor: "pointer", color: "red" }}
+                                    style={{cursor: "pointer", color: "red"}}
                                     onClick={() => openDeleteModal(record)}
                                 />
                             </Tooltip>
@@ -117,6 +124,20 @@ export function DataTableWrapper({
             },
         ];
     }, [columns, showActions, canEdit, canDelete, handleOnEdit, openDeleteModal]);
+
+    const handlePageChange = (page) => {
+        setPagination((prev) => ({...prev, page}));
+        fetchData({page, pageSize: pagination.pageSize});
+    };
+
+    const handlePageSizeChange = (pageSize) => {
+        setPagination({...pagination, pageSize, page: 1});
+        fetchData({page: 1, pageSize});
+    };
+
+    const fetchData = ({page, pageSize}) => {
+        onRefresh(page, pageSize);
+    };
 
     return (
         <div className="h-full w-full flex flex-col items-start justify-start gap-4">
@@ -184,20 +205,15 @@ export function DataTableWrapper({
                 fetching={loading}
                 highlightOnHover
                 pinLastColumn
-                records={filteredData.slice(
-                    (pagination.page - 1) * pagination.pageSize,
-                    pagination.page * pagination.pageSize
-                )}
+                records={filteredData}
                 noRecordsText="No Records To Show"
                 columns={enhancedColumns}
-                totalRecords={filteredData.length}
+                totalRecords={pagination?.totalRecords}
                 recordsPerPage={pagination.pageSize}
                 page={pagination.page}
-                onPageChange={(page) => setPagination((prev) => ({...prev, page}))}
+                onPageChange={handlePageChange}
+                onRecordsPerPageChange={handlePageSizeChange}
                 recordsPerPageOptions={PAGE_SIZES}
-                onRecordsPerPageChange={(pageSize) =>
-                    setPagination((prev) => ({...prev, pageSize}))
-                }
                 sortStatus={pagination.sortStatus}
                 onSortStatusChange={handleSortChange}
                 paginationSize="md"

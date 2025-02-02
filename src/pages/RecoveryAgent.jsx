@@ -5,7 +5,6 @@ import {useModal} from "@hooks/AddEditModal.jsx";
 import {useHttp} from "@hooks/AxiosInstance.js";
 import {useApiConfig} from "@context/ApiConfig.jsx";
 import {utils} from "../utils.js";
-import {CreateUpdateStudent} from "../models/CreateUpdateStudent.jsx";
 import {CreateUpdateRecoveryAgent} from "../models/CreateUpdateRecoveryAgent.jsx";
 
 export default function RecoveryAgent({data}) {
@@ -71,9 +70,12 @@ export default function RecoveryAgent({data}) {
         getRecoveryAgentList().then();
     }, [])
 
-    const getRecoveryAgentList = useCallback(async () => {
+    const getRecoveryAgentList = useCallback(async (
+        pageNumber = utils.pageConfig.pageNumber,
+        pageSize = utils.pageConfig.pageSize) => {
+        setIsLoading(true);
         try {
-            const response = await get(apiConfig.recoveryAgent.list(utils.pageConfig.pageNumber, utils.pageConfig.pageSize));
+            const response = await get(apiConfig.recoveryAgent.list(pageNumber, pageSize));
             if (response.status === 200) {
                 const data = response.data;
                 setDataSource(data);

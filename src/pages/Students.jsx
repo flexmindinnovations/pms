@@ -8,22 +8,7 @@ import {FollowUp} from "../models/FllowUp.jsx";
 import {useHttp} from "@hooks/AxiosInstance.js";
 import {useApiConfig} from "@context/ApiConfig.jsx";
 
-
 export default function Students() {
-
-    /*
-    * id
-    * Name
-    * Institute
-    * Batch
-    * Phone
-    * Guardian Phone
-    * Email
-    * Guardian Email
-    * */
-    const colPros = {
-        height: 50,
-    }
     const [dataSource, setDataSource] = useState(null);
     const [isLoading, setIsLoading] = useState(true);
     const {openModal} = useModal();
@@ -50,7 +35,7 @@ export default function Students() {
             title: 'Name',
             width: 150,
             style: {padding: '10px'},
-            ...colPros,
+            ...utils.colPros,
             render: (record) => (
                 <div className={`w-full, text-left`}>
                     <Anchor c={theme.colors.blue[6]} size={'xs'} onClick={() => handleLinkClick(record)}>
@@ -64,49 +49,44 @@ export default function Students() {
             title: 'Institute',
             width: 200,
             style: {padding: '10px'},
-            ...colPros
+            ...utils.colPros,
         },
         {
             accessor: 'batch',
             title: 'Batch',
             width: 100,
             style: {padding: '10px'},
-            ...colPros
+            ...utils.colPros,
         },
         {
             accessor: 'phone',
             title: 'Phone',
             width: 120,
             style: {padding: '10px'},
-            ...colPros
+            ...utils.colPros,
         },
         {
             accessor: 'gaurdianPhone',
             title: 'Guardian Phone',
             width: 140,
             style: {padding: '10px'},
-            ...colPros
+            ...utils.colPros,
         },
         {
             accessor: 'email',
             title: 'Email',
             width: 200,
             style: {padding: '10px'},
-            ...colPros
+            ...utils.colPros,
         },
         {
             accessor: 'gaurdianEmail',
             title: 'Guardian Email',
             width: 200,
             style: {padding: '10px'},
-            ...colPros
+            ...utils.colPros,
         },
     ], [])
-
-    const pageConfig = {
-        pageNumber: 1,
-        pageSize: 10,
-    }
 
     useEffect(() => {
         getStudentList().then();
@@ -116,9 +96,9 @@ export default function Students() {
         openFollowupModal({data: record});
     }
 
-    const getStudentList = useCallback(async () => {
+    const getStudentList = useCallback(async (pageNumber = utils.pageConfig.pageNumber, pageSize = utils.pageConfig.pageSize) => {
         try {
-            const response = await get(apiConfig.students.list(pageConfig.pageNumber, pageConfig.pageSize));
+            const response = await get(apiConfig.students.list(pageNumber, pageSize));
             if (response.status === 200) {
                 const data = response.data;
                 setDataSource(data);

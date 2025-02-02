@@ -1,19 +1,30 @@
-import {TextInput, Button, Select, Textarea, Grid, Container, Group} from '@mantine/core';
+import {Button, Container, Grid, Group, Select, Textarea, TextInput, useMantineTheme} from '@mantine/core';
 import {DateInput} from '@mantine/dates';
-import { useForm } from '@mantine/form';
-import { useState, useEffect } from 'react';
+import {useForm} from '@mantine/form';
+import {useState} from 'react';
 import dayjs from 'dayjs';
+import {utils} from "../utils.js";
+import {useApiConfig} from "@context/ApiConfig.jsx";
+import {useHttp} from "@hooks/AxiosInstance.js";
 
-export function CreateUpdateCampaign({data = {}, handleCancel, onAddEdit}) {
-    const [formData, setFormData] = useState(data);
+export function CreateUpdateCampaign({data = {}, mode = 'add', handleCancel, onAddEdit}) {
+    const payload = {
+        "name": "Corporate Loan Recovery Q1",
+        "startDate": "2025-03-01T00:00:00.000Z",
+        "endDate": "2025-05-31T23:59:59.999Z",
+        "status": "Active",
+        "description": "Targeting corporate clients with overdue loan payments."
+    }
 
+    const formData = data || payload;
+    const [disableForm, setDisableForm] = useState(false);
     const form = useForm({
         initialValues: {
-            name: data?.recoveryCampaignName || '',
-            startDate: data?.startDate ? dayjs(data.startDate).toDate() : null,
-            endDate: data?.endDate ? dayjs(data.endDate).toDate() : null,
-            status: data?.status || 'Active',
-            description: data?.description || '',
+            name: formData?.name || '',
+            startDate: formData?.startDate ? dayjs(formData.startDate).toDate() : null,
+            endDate: formData?.endDate ? dayjs(formData.endDate).toDate() : null,
+            status: formData?.status || 'Active',
+            description: formData?.description || '',
         },
         validate: {
             name: (value) => (value.length > 0 ? null : 'Name is required'),
@@ -22,18 +33,34 @@ export function CreateUpdateCampaign({data = {}, handleCancel, onAddEdit}) {
             status: (value) => (value.length > 0 ? null : 'Status is required'),
             description: (value) => (value.length > 0 ? null : 'Description is required'),
         },
+        enhanceGetInputProps: () => ({disabled: disableForm}),
     });
 
-    const handleSubmit = async (values) => {
+    const [isLoading, setIsLoading] = useState(false);
+    const theme = useMantineTheme();
+    const apiConfig = useApiConfig();
+    const {post, put} = useHttp();
 
+    const handleSubmit = async (values) => {
+        setIsLoading(true);
+        setDisableForm(true);
+        try {
+            const response = mode === 'add' ? await post(apiConfig.recoveryCampaign.create, values) : await put(apiConfig.recoveryCampaign.update, {id: data.id, ...values});
+            if (response.status === 200) {
+                utils.showNotifications('Success', 'Operation successful!', 'success', theme);
+            }
+        } catch (error) {
+            console.log(error);
+            utils.showNotifications('Error', error.message, 'error', theme);
+        } finally {
+            setIsLoading(false);
+            setDisableForm(false);
+            handleCancel({refresh: true});
+        }
     };
 
-    useEffect(() => {
-        setFormData(data);
-    }, [data]);
-
     return (
-        <Container  size="xs" py={20}>
+        <Container size="xs" py={20}>
             <form onSubmit={form.onSubmit(handleSubmit)}>
                 <Grid gutter="lg">
                     <Grid.Col span={6}>
@@ -68,8 +95,8 @@ export function CreateUpdateCampaign({data = {}, handleCancel, onAddEdit}) {
                             label="Status"
                             placeholder="Select status"
                             data={[
-                                { value: 'Active', label: 'Active' },
-                                { value: 'Inactive', label: 'Inactive' },
+                                {value: 'Active', label: 'Active'},
+                                {value: 'Inactive', label: 'Inactive'},
                             ]}
                             {...form.getInputProps('status')}
                             required
@@ -93,7 +120,7 @@ export function CreateUpdateCampaign({data = {}, handleCancel, onAddEdit}) {
                     >
                         Cancel
                     </Button>
-                    <Button type="submit">
+                    <Button type="submit" disabled={isLoading} loading={isLoading}>
                         Submit
                     </Button>
                 </Group>

@@ -15,6 +15,13 @@ const contextConfig = {
         create: `${endpoint}/RecoveryAgent`,
         update: `${endpoint}/RecoveryAgent`,
         delete: `${endpoint}/RecoveryAgent`,
+    },
+    recoveryCampaign: {
+        list: (pageNumber = 1, pageSize = 1) => `${endpoint}/RecoveryCampaign/List?PageNumber=${pageNumber}&PageSize=${pageSize}`,
+        getById: (id) => `${endpoint}/RecoveryCampaign?Id=${id}`,
+        create: `${endpoint}/RecoveryCampaign`,
+        update: `${endpoint}/RecoveryCampaign`,
+        delete: `${endpoint}/RecoveryCampaign`,
     }
 }
 
