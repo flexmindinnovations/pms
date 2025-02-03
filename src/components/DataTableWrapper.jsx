@@ -14,9 +14,9 @@ import {useCallback, useEffect, useMemo, useState} from "react";
 import {Plus, RefreshCcw, Search, SquarePen, Trash2,} from "lucide-react";
 import {modals} from "@mantine/modals";
 import styles from "@styles/DataTableWrapper.module.css";
-import {data} from "react-router-dom";
 
 export function DataTableWrapper({
+                                     tableId = '',
                                      loading,
                                      columns = [],
                                      dataSource = {
@@ -36,6 +36,7 @@ export function DataTableWrapper({
                                      showActions = true,
                                      canEdit = true,
                                      canDelete = true,
+                                     showRefreshButton = true,
                                  }) {
     const [pagination, setPagination] = useState({
         page: dataSource?.pageNumber || 1,
@@ -43,7 +44,6 @@ export function DataTableWrapper({
         sortStatus: {columnAccessor: "", direction: ""},
     });
     const [searchQuery, setSearchQuery] = useState("");
-
     const theme = useMantineTheme();
     const {colorScheme} = useMantineColorScheme();
     const themeMode = colorScheme === "auto"
@@ -108,7 +108,8 @@ export function DataTableWrapper({
                     backgroundColor: theme.white
                 },
                 render: (record) => (
-                    <Group gap={8} p={0} wrap="nowrap" justify="center" className={`bg-white min-h-[40px] w-full h-full`}>
+                    <Group gap={8} p={0} wrap="nowrap" justify="center"
+                           className={`bg-white min-h-[40px] w-full h-full`}>
                         {canEdit && (
                             <Tooltip label="Edit">
                                 <SquarePen size={16} style={{cursor: "pointer"}} onClick={() => handleOnEdit(record)}/>
@@ -167,19 +168,23 @@ export function DataTableWrapper({
                         />
                     </div>
                     <Group gap={1}>
-                        <Tooltip label="Refresh Data">
-                            <ActionIcon
-                                onClick={onRefresh}
-                                loading={loading}
-                                style={{
-                                    borderRadius: showAddButton ? `${radius} 0 0 ${radius}` : radius,
-                                    width: 60,
-                                    height: 38,
-                                }}
-                            >
-                                <RefreshCcw size={16}/>
-                            </ActionIcon>
-                        </Tooltip>
+                        {
+                            showRefreshButton && (
+                                <Tooltip label="Refresh Data">
+                                    <ActionIcon
+                                        onClick={onRefresh}
+                                        loading={loading}
+                                        style={{
+                                            borderRadius: showAddButton ? `${radius} 0 0 ${radius}` : radius,
+                                            width: 60,
+                                            height: 38,
+                                        }}
+                                    >
+                                        <RefreshCcw size={16}/>
+                                    </ActionIcon>
+                                </Tooltip>
+                            )
+                        }
                         {showAddButton && (
                             <Tooltip label={`Add ${addTitle}`}>
                                 <ActionIcon
@@ -200,6 +205,7 @@ export function DataTableWrapper({
             </div>
 
             <DataTable
+                key={tableId}
                 withTableBorder
                 withColumnBorders
                 storeColumnsKey={id}

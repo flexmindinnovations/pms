@@ -1,4 +1,6 @@
 import {createContext, useContext} from "react";
+import {utils} from "../utils.js";
+
 const endpoint = `https://test.feerecovery.shashibgroup.in/aws/Api`;
 const contextConfig = {
     login: `https://test.pms.shashibgroup.in/aws/api/Authentication`,
@@ -17,11 +19,14 @@ const contextConfig = {
         delete: `${endpoint}/RecoveryAgent`,
     },
     recoveryCampaign: {
-        list: (pageNumber = 1, pageSize = 1) => `${endpoint}/RecoveryCampaign/List?PageNumber=${pageNumber}&PageSize=${pageSize}`,
+        list: (pageNumber = utils.pageConfig.pageNumber, pageSize = utils.pageConfig.pageSize) => `${endpoint}/RecoveryCampaign/List?PageNumber=${pageNumber}&PageSize=${pageSize}`,
         getById: (id) => `${endpoint}/RecoveryCampaign?Id=${id}`,
+        details: (id, pageNumber = utils.pageConfig.pageNumber, pageSize = utils.pageConfig.pageSize) => `${endpoint}/CampaignDetail/List?RecoveryCampaignId=${id}&PageNumber=${pageNumber}&PageSize=${pageSize}`,
+        activate: `${endpoint}/RecoveryCampaign/Activate`,
         create: `${endpoint}/RecoveryCampaign`,
         update: `${endpoint}/RecoveryCampaign`,
         delete: `${endpoint}/RecoveryCampaign`,
+        tallySync: `${endpoint}/RecoveryCampaign/TallySync`,
     },
     followUp: {
         list: (pageNumber = 1, pageSize = 1) => `${endpoint}/FollowUp/List?PageNumber=${pageNumber}&PageSize=${pageSize}`,

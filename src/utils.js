@@ -21,13 +21,14 @@ export const utils = {
     ),
     pageConfig: {
         pageNumber: 1,
-        pageSize: 10,
+        pageSize: 15,
     },
     colPros: {
         noWrap: true,
         textAlign: 'center',
         width: 'auto',
         height: 50,
+        padding: '10px'
     },
     gradientButton: {
         color: 'white',

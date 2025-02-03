@@ -1,4 +1,4 @@
-import {ActionIcon, Card, Container, Text, useMantineTheme} from "@mantine/core";
+import {ActionIcon, Anchor, Card, Container, Text, useMantineTheme} from "@mantine/core";
 import {useCallback, useEffect, useMemo, useState} from "react";
 import dayjs from "dayjs";
 import {RefreshCw} from 'lucide-react';
@@ -8,13 +8,14 @@ import {CreateUpdateCampaign} from "../models/CreateUpdateCampaign.jsx";
 import {useHttp} from "@hooks/AxiosInstance.js";
 import {useApiConfig} from "@context/ApiConfig.jsx";
 import {utils} from "../utils.js";
+import {CampaignDetails} from "../models/CampaignDetails.jsx";
 
 export default function RecoveryCampaign() {
     const [isLoading, setIsLoading] = useState(false);
     const {openModal} = useModal();
     const [dataSource, setDataSource] = useState(null);
     const theme = useMantineTheme();
-    const {get, del} = useHttp();
+    const {get, post, del} = useHttp();
     const apiConfig = useApiConfig();
 
     const columns = useMemo(() => [
@@ -24,7 +25,11 @@ export default function RecoveryCampaign() {
             minWidth: 200,
             ...utils.colPros,
             render: (record) => (
-                <p className={`px-4 text-start`}>{record.name}</p>
+                <div className={`w-full text-start px-4`}>
+                    <Anchor c={theme.colors.blue[6]} size={'xs'} onClick={() => handleLinkClick(record)}>
+                        {record.name}
+                    </Anchor>
+                </div>
             ),
         },
         {
@@ -58,19 +63,23 @@ export default function RecoveryCampaign() {
             ),
         },
         {
-            accessor: 'LastTallySyncTimestamp',
+            accessor: 'lastTallySyncTimestamp',
             title: 'Last TallySync Timestamp',
             ...utils.colPros,
             minWidth: 100,
+            render: (record) => <p className={`px-4 text-start`}>{
+                record.lastTallySyncTimestamp
+                    ? dayjs.utc(record.lastTallySyncTimestamp).tz('Asia/Kolkata').format('MMMM D, YYYY h:mm A')
+                    : 'NA'}</p>,
         },
         {
             accessor: 'tallySync',
             title: 'Tally Sync',
             minWidth: 50,
             ...utils.colPros,
-            render: () => (
+            render: (record) => (
                 <div className={`w-full flex items-center justify-center`}>
-                    <ActionIcon size={"md"}>
+                    <ActionIcon onClick={() => handleTallySync(record)} size={"md"}>
                         <RefreshCw size={14}/>
                     </ActionIcon>
                 </div>
@@ -81,6 +90,21 @@ export default function RecoveryCampaign() {
     useEffect(() => {
         getRecoveryCampaignList().then();
     }, [])
+
+    const handleTallySync = async ({id}) => {
+        setIsLoading(true);
+        try {
+            const response = await post(apiConfig.recoveryCampaign.tallySync, {id});
+            if (response.status === 200) {
+                getRecoveryCampaignList().then();
+            }
+        } catch (err) {
+            const {message} = err;
+            utils.showNotifications('Error', message, 'error', theme);
+        } finally {
+            setIsLoading(false);
+        }
+    }
 
     const getRecoveryCampaignList = useCallback(async (pageNumber = utils.pageConfig.pageNumber, pageSize = utils.pageConfig.pageSize) => {
         setIsLoading(true);
@@ -100,6 +124,21 @@ export default function RecoveryCampaign() {
 
     const handleOnAddEdit = (data, mode) => {
         openAddEditModal({data, mode});
+    }
+
+    const handleLinkClick = (record) => {
+        openModal({
+            Component: CampaignDetails,
+            data: record,
+            mode: 'view',
+            title: record.name,
+            size: 'xl',
+            fullScreen: true,
+            isView: true,
+            props: `h-[calc(100%-100px)]`,
+            handleRefresh: () => {
+            }
+        });
     }
 
     const openAddEditModal = ({data = {}, mode = 'add'}) => {
@@ -137,13 +176,13 @@ export default function RecoveryCampaign() {
                 id={'id'}
                 addTitle={'Recovery Campaign'}
                 columns={columns}
-                canEdit={false}
+                canEdit={true}
                 canDelete={true}
                 dataSource={dataSource}
                 handleOnAdd={() => handleOnAddEdit(null)}
                 handleOnEdit={(data) => handleOnAddEdit(data, 'add')}
                 handleOnDelete={(data) => handleOnDelete(data, 'edit')}
-                onRefresh={getRecoveryCampaignList}
+                onRefresh={() => getRecoveryCampaignList()}
             />
         </Container>
     )
