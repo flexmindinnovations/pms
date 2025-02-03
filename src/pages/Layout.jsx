@@ -1,5 +1,6 @@
 import {
     AppShell,
+    Breadcrumbs,
     Burger,
     Button,
     Container,
@@ -12,11 +13,11 @@ import {
 } from "@mantine/core";
 import {useDisclosure} from '@mantine/hooks'
 import {AnimatePresence, motion} from 'motion/react';
-import {Link, Outlet, useLocation} from 'react-router-dom';
+import {Link, NavLink, Outlet, useLocation} from 'react-router-dom';
 import {createElement, useEffect, useState} from "react";
 import {utils} from "../utils.js";
 import styles from '@styles/Layout.module.css';
-import {LogOut} from 'lucide-react';
+import {Home, LogOut} from 'lucide-react';
 import {useAuth} from "@context/AuthContext.jsx";
 import {useEncrypt} from "@hooks/EncryptData.js";
 
@@ -27,6 +28,8 @@ export default function Layout() {
     const {pathname} = useLocation()
     const {logout} = useAuth();
     const {getEncryptedData} = useEncrypt();
+    const [breadcrumbs, setBreadcrumbs] = useState([]);
+    const uuidPattern = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
 
     useEffect(() => {
         let _menuItems = utils.menuItems;
@@ -39,6 +42,24 @@ export default function Layout() {
             }))
             setMenuItems(_menuItems);
         }
+        const pathNames = location.pathname
+            .split("/")
+            .filter((x) => x && !uuidPattern.test(x))
+            .map((path) => path.replace(/-/g, " "))
+            .map((path) => path.charAt(0).toUpperCase() + path.slice(1));
+        const home = <NavLink to={'/'} key={'home'}>
+            <Home size={16}/>
+        </NavLink>;
+        const newBreadcrumbs = pathNames
+            .filter((path) => !uuidPattern.test(path))
+            .map((path, index) => {
+                return (
+                    <Text key={index}>
+                        {path}
+                    </Text>
+                )
+            });
+        setBreadcrumbs([home, ...newBreadcrumbs]);
     }, [pathname]);
 
     const handleLogout = () => logout();
@@ -91,9 +112,12 @@ export default function Layout() {
                     />
                     <Group justify='space-between' style={{flex: 1}}>
                         <Group pos={'left'}>
-                            <Text>{getEncryptedData('user')}</Text>
+                            <Breadcrumbs separator="→" separatorMargin="xs" mt="xs">
+                                {breadcrumbs}
+                            </Breadcrumbs>
                         </Group>
-                        <Group pos={'right'}>
+                        <Group pos={'right'} gap={20}>
+                            <Text>{getEncryptedData('user')}</Text>
                             <Button
                                 variant={"filled"}
                                 bg={theme.colors.red[6]}

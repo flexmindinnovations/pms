@@ -22,7 +22,7 @@ export default function RecoveryAgent() {
             ...utils.colPros,
             render: (record) => (
                 <div className={`w-full text-start px-4`}>
-                    <Anchor c={theme.colors.blue[6]} size={'xs'} onClick={() => handleLinkClick(record)}>
+                    <Anchor c={theme.colors.blue[6]} size={'sm'} onClick={() => handleLinkClick(record)}>
                         {record.name}
                     </Anchor>
                 </div>

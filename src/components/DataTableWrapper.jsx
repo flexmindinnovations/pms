@@ -15,6 +15,7 @@ import {Plus, RefreshCcw, Search, SquarePen, Trash2,} from "lucide-react";
 import {modals} from "@mantine/modals";
 import styles from "@styles/DataTableWrapper.module.css";
 
+
 export function DataTableWrapper({
                                      tableId = '',
                                      loading,

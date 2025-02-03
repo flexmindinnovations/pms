@@ -1,6 +1,8 @@
 import {ActionIcon, Anchor, Card, Container, Text, useMantineTheme} from "@mantine/core";
 import {useCallback, useEffect, useMemo, useState} from "react";
 import dayjs from "dayjs";
+import utc from "dayjs/plugin/utc.js";
+import tz from "dayjs/plugin/timezone.js";
 import {RefreshCw} from 'lucide-react';
 import {DataTableWrapper} from "@components/DataTableWrapper.jsx";
 import {useModal} from "@hooks/AddEditModal.jsx";
@@ -8,7 +10,10 @@ import {CreateUpdateCampaign} from "../models/CreateUpdateCampaign.jsx";
 import {useHttp} from "@hooks/AxiosInstance.js";
 import {useApiConfig} from "@context/ApiConfig.jsx";
 import {utils} from "../utils.js";
-import {CampaignDetails} from "../models/CampaignDetails.jsx";
+import {useNavigate} from "react-router-dom";
+
+dayjs.extend(utc);
+dayjs.extend(tz);
 
 export default function RecoveryCampaign() {
     const [isLoading, setIsLoading] = useState(false);
@@ -17,6 +22,7 @@ export default function RecoveryCampaign() {
     const theme = useMantineTheme();
     const {get, post, del} = useHttp();
     const apiConfig = useApiConfig();
+    const navigate = useNavigate();
 
     const columns = useMemo(() => [
         {
@@ -26,7 +32,7 @@ export default function RecoveryCampaign() {
             ...utils.colPros,
             render: (record) => (
                 <div className={`w-full text-start px-4`}>
-                    <Anchor c={theme.colors.blue[6]} size={'xs'} onClick={() => handleLinkClick(record)}>
+                    <Anchor c={theme.colors.blue[6]} size={'sm'} onClick={() => handleLinkClick(record)}>
                         {record.name}
                     </Anchor>
                 </div>
@@ -106,7 +112,7 @@ export default function RecoveryCampaign() {
         }
     }
 
-    const getRecoveryCampaignList = useCallback(async (pageNumber = utils.pageConfig.pageNumber, pageSize = utils.pageConfig.pageSize) => {
+    const getRecoveryCampaignList = useCallback(async (pageNumber = (utils.pageConfig.pageNumber || 1), pageSize = (utils.pageConfig.pageSize || 15)) => {
         setIsLoading(true);
         try {
             const response = await get(apiConfig.recoveryCampaign.list(pageNumber, pageSize));
@@ -127,24 +133,14 @@ export default function RecoveryCampaign() {
     }
 
     const handleLinkClick = (record) => {
-        openModal({
-            Component: CampaignDetails,
-            data: record,
-            mode: 'view',
-            title: record.name,
-            size: 'xl',
-            fullScreen: true,
-            isView: true,
-            props: `h-[calc(100%-100px)]`,
-            handleRefresh: () => {
-            }
-        });
+        navigate(`/campaign-details/${record.id}`, {state: record});
     }
 
     const openAddEditModal = ({data = {}, mode = 'add'}) => {
         openModal({
             Component: CreateUpdateCampaign,
             data,
+            isAddEdit: true,
             mode,
             title: 'Recovery Campaign',
             handleRefresh: getRecoveryCampaignList
@@ -180,8 +176,8 @@ export default function RecoveryCampaign() {
                 canDelete={true}
                 dataSource={dataSource}
                 handleOnAdd={() => handleOnAddEdit(null)}
-                handleOnEdit={(data) => handleOnAddEdit(data, 'add')}
-                handleOnDelete={(data) => handleOnDelete(data, 'edit')}
+                handleOnEdit={(data) => handleOnAddEdit(data, 'edit')}
+                handleOnDelete={(data) => handleOnDelete(data)}
                 onRefresh={() => getRecoveryCampaignList()}
             />
         </Container>

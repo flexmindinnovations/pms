@@ -1,15 +1,22 @@
-import {Anchor, Container, useMantineTheme} from "@mantine/core";
+import {ActionIcon, Anchor, Container, useMantineTheme} from "@mantine/core";
 import {useCallback, useEffect, useState} from "react";
 import {useHttp} from "@hooks/AxiosInstance.js";
 import {useApiConfig} from "@context/ApiConfig.jsx";
 import {utils} from "../utils.js";
 import {DataTableWrapper} from "@components/DataTableWrapper.jsx";
+import {ExternalLink} from 'lucide-react';
+import {useModal} from "@hooks/AddEditModal.jsx";
+import {useLocation, useNavigate, useParams} from "react-router-dom";
 
-export function CampaignDetails({data}) {
+export default function CampaignDetails() {
+    const {campaignId} = useParams();
+    const location = useLocation();
+    const navigate = useNavigate();
     const [isLoading, setIsLoading] = useState(false);
     const [dataSource, setDataSource] = useState(null);
     const theme = useMantineTheme();
     const {get, del} = useHttp();
+    const {openModal} = useModal();
     const apiConfig = useApiConfig();
     const columns = [
         {
@@ -55,13 +62,22 @@ export function CampaignDetails({data}) {
         {
             accessor: 'followUp',
             title: 'Follow Up',
-            minWidth: 200,
-            ...utils.colPros,
+            textAlign: 'center',
+            minWidth: 40,
+            width: 100,
             render: (record) => (
-                <p className={`px-4 py-2 text-base text-start`}>{record.gaurdianEmail}</p>
+                <div className={`w-full flex items-center justify-center`}>
+                    <ActionIcon onClick={() => openFollowUpModal(record)} size={"md"}>
+                        <ExternalLink size={14}/>
+                    </ActionIcon>
+                </div>
             ),
         },
     ];
+
+    const openFollowUpModal = (record) => {
+        navigate(`/campaign-details/${campaignId}/follow-up`, {state: record});
+    }
 
     const handleLinkClick = (record) => {
         console.log('record: ', record);
@@ -74,10 +90,9 @@ export function CampaignDetails({data}) {
     const getCampaignDetails = useCallback(async (pageNumber = utils.pageConfig.pageNumber, pageSize = utils.pageConfig.pageSize) => {
         setIsLoading(true);
         try {
-            const response = await get(apiConfig.recoveryCampaign.details(data?.id, pageNumber, pageSize));
+            const response = await get(apiConfig.recoveryCampaign.details(campaignId, pageNumber, pageSize));
             if (response.status === 200) {
                 const data = response.data;
-                console.log('data; ', data)
                 const newDataSource = {
                     ...data,
                     items: data?.items.map((record) => {
@@ -87,7 +102,6 @@ export function CampaignDetails({data}) {
                         }
                     })
                 }
-                console.log('newDataSource; ', newDataSource)
                 setDataSource(newDataSource);
             }
         } catch (err) {
@@ -99,9 +113,9 @@ export function CampaignDetails({data}) {
     }, [])
 
     return (
-        <Container size={'xl'} fluid>
+        <Container size={'xl'} p={0} fluid>
             <DataTableWrapper
-                tableId={data?.id}
+                tableId={campaignId}
                 loading={isLoading}
                 showAddButton={false}
                 showRefreshButton={false}

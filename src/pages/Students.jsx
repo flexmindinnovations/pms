@@ -2,11 +2,11 @@ import {Anchor, Container, useMantineTheme} from "@mantine/core";
 import {useCallback, useEffect, useMemo, useState} from "react";
 import {DataTableWrapper} from "@components/DataTableWrapper.jsx";
 import {utils} from "../utils.js";
-import {CreateUpdateStudent} from "../models/CreateUpdateStudent.jsx";
+import {CreateUpdateStudent} from "@models/CreateUpdateStudent.jsx";
 import {useModal} from "@hooks/AddEditModal.jsx";
-import {FollowUp} from "../models/FllowUp.jsx";
 import {useHttp} from "@hooks/AxiosInstance.js";
 import {useApiConfig} from "@context/ApiConfig.jsx";
+import {CreateUpdateFollowUp} from "@models/CreateUpdateFollowUp.jsx";
 
 export default function Students() {
     const [dataSource, setDataSource] = useState(null);
@@ -23,7 +23,7 @@ export default function Students() {
             ...utils.colPros,
             render: (record) => (
                 <div className={`w-full text-left px-4`}>
-                    <Anchor c={theme.colors.blue[6]} size={'xs'} onClick={() => handleLinkClick(record)}>
+                    <Anchor c={theme.colors.blue[6]} size={'sm'} onClick={() => handleLinkClick(record)}>
                         {record.name}
                     </Anchor>
                 </div>
@@ -126,7 +126,7 @@ export default function Students() {
 
     const openFollowupModal = ({data = {}, mode = 'followup'}) => {
         openModal({
-            Component: FollowUp,
+            Component: CreateUpdateFollowUp,
             data,
             mode,
             title: 'Follow Up',

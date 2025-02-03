@@ -126,6 +126,7 @@ export default function Login() {
                 <Card p={20}
                       styles={{
                           root: {
+                              maxWidth: (theme.breakpoints.xs || theme.breakpoints.sm) ? '100%' : '40%',
                               backgroundColor: "var(--polka)"
                           }
                       }}
