@@ -1,9 +1,9 @@
-import {ActionIcon, Anchor, Container, Text, useMantineTheme} from "@mantine/core";
-import {useCallback, useEffect, useState} from "react";
+import {ActionIcon, Anchor, CloseButton, Container, Text, TextInput, Tooltip, useMantineTheme} from "@mantine/core";
+import {useCallback, useEffect, useMemo, useState} from "react";
 import {useHttp} from "@hooks/AxiosInstance.js";
 import {useApiConfig} from "@context/ApiConfig.jsx";
 import {utils} from "../utils.js";
-import {ExternalLink, IndianRupee} from 'lucide-react';
+import {ExternalLink, IndianRupee, Search} from 'lucide-react';
 import {useLocation, useNavigate, useParams} from "react-router-dom";
 import {DataTable} from "mantine-datatable";
 import dayjs from "dayjs";
@@ -12,6 +12,7 @@ import tz from "dayjs/plugin/timezone.js";
 import {useModal} from "@hooks/AddEditModal.jsx";
 import {RecoveryAgentDetails} from "@models/RecoveryAgentDetails.jsx";
 import {StudentDetails} from "@models/StudentDetails.jsx";
+import {CreateUpdateStudent} from "@models/CreateUpdateStudent.jsx";
 
 dayjs.extend(utc);
 dayjs.extend(tz);
@@ -26,6 +27,14 @@ export default function CampaignDetails() {
     const {get, del} = useHttp();
     const apiConfig = useApiConfig();
     const {openModal} = useModal();
+    const [pagination, setPagination] = useState({
+        page: dataSource?.pageNumber || 1,
+        pageSize: 15,
+        sortStatus: {columnAccessor: "", direction: ""},
+    });
+    const PAGE_SIZES = [10, 15, 20];
+    const [searchQuery, setSearchQuery] = useState("");
+
     const moreDetailsColumns = [
 
         {
@@ -63,8 +72,9 @@ export default function CampaignDetails() {
         {
             accessor: 'instituteName',
             title: 'Institute',
-            minWidth: 200,
+            minWidth: 220,
             ...utils.colPros,
+            width: 220,
             render: (record) => (
                 <p className={`px-4 py-2 text-base text-start`}>{record.instituteName}</p>
             ),
@@ -72,8 +82,9 @@ export default function CampaignDetails() {
         {
             accessor: 'batch',
             title: 'Batch',
-            minWidth: 100,
+            minWidth: 200,
             ...utils.colPros,
+            width: 200,
             render: (record) => (
                 <p className={`px-4 py-2 text-base text-start`}>{record.batch}</p>
             ),
@@ -91,7 +102,7 @@ export default function CampaignDetails() {
     const followUpColumns = [
         {
             accessor: 'outstandingAmount',
-            title: 'Outstanding Amount',
+            title: 'Balances',
             minWidth: 150,
             ...utils.colPros,
             render: ({followUp}) => (
@@ -108,7 +119,7 @@ export default function CampaignDetails() {
         },
         {
             accessor: 'timestamp',
-            title: 'Timestamp',
+            title: 'Last Followup',
             minWidth: 150,
             ...utils.colPros,
             render: ({followUp}) => (
@@ -172,6 +183,48 @@ export default function CampaignDetails() {
         }
     ]
 
+    const filteredData = useMemo(() => {
+        const query = searchQuery.toLowerCase();
+        return dataSource?.items?.filter((record) =>
+            Object.values(record).some((value) =>
+                String(value || "").toLowerCase().includes(query)
+            )
+        ) || [];
+    }, [searchQuery, dataSource]);
+
+    useEffect(() => {
+        if (!dataSource?.items?.length) return;
+        setPagination((prev) => ({
+            ...prev,
+            page: dataSource.pageNumber || 1,
+            totalRecords: dataSource.totalCount || 0,
+            hasPreviousPage: !!dataSource.hasPreviousPage,
+            hasNextPage: !!dataSource.hasNextPage,
+        }));
+        filteredData.slice(
+            (pagination.page - 1) * pagination.pageSize,
+            pagination.page * pagination.pageSize
+        )
+    }, [dataSource]);
+
+    const handleSortChange = useCallback((sortStatus) => {
+        setPagination((prev) => ({...prev, sortStatus}));
+    }, []);
+
+    const handlePageChange = (page) => {
+        setPagination((prev) => ({...prev, page}));
+        fetchData({page, pageSize: pagination.pageSize});
+    };
+
+    const handlePageSizeChange = (pageSize) => {
+        setPagination({...pagination, pageSize, page: 1});
+        fetchData({page: 1, pageSize});
+    };
+
+    const fetchData = ({page, pageSize}) => {
+        getCampaignDetails(page, pageSize).then();
+    };
+
     const openFollowUpModal = (record) => {
         navigate(`/campaign-details/${campaignId}/follow-up`, {state: record});
     }
@@ -180,27 +233,26 @@ export default function CampaignDetails() {
         switch (user) {
             case 'recoveryAgent': {
                 const {recoveryAgentDto} = record.followUp;
-                openDetailsModel(recoveryAgentDto, RecoveryAgentDetails, 'Recovery Agent')
+                openDetailsModel(recoveryAgentDto, RecoveryAgentDetails, 'Recovery Agent', 'view')
                 break;
             }
             case 'student': {
                 const {studentDto} = record;
-                openDetailsModel(studentDto, StudentDetails, 'Student Details');
+                openDetailsModel(studentDto, CreateUpdateStudent, 'Update Student Details', 'edit');
                 break;
             }
         }
-
     }
 
-    const openDetailsModel = (data, component, title) => {
+    const openDetailsModel = (data, component, title, mode) => {
         openModal({
             data,
             Component: component,
-            isAddEdit: false,
+            isAddEdit: mode !== 'edit',
             withCloseButton: true,
-            size: 'md',
+            size: mode === 'edit' ? 'lg' : 'md',
             title,
-            isView: true,
+            isView: mode !== 'edit',
         })
     }
 
@@ -239,12 +291,55 @@ export default function CampaignDetails() {
 
     return (
         <Container size={'xl'} p={0} fluid>
+            <div className={`mb-4`} style={{position: "relative", width: "50%"}}>
+                <TextInput
+                    type="text"
+                    leftSection={<Search size={16}/>}
+                    disabled={isLoading || !dataSource?.items?.length}
+                    rightSection={
+                        searchQuery && (
+                            <Tooltip label="Clear Search">
+                                <CloseButton onClick={() => setSearchQuery("")}/>
+                            </Tooltip>
+                        )
+                    }
+                    rightSectionWidth={40}
+                    placeholder="Search"
+                    value={searchQuery}
+                    onChange={(e) => setSearchQuery(e.target.value)}
+                    style={{width: "100%"}}
+                />
+            </div>
             <DataTable
                 withTableBorder
                 withColumnBorders
-                records={dataSource?.items}
+                records={filteredData}
                 fetching={isLoading}
                 pinLastColumn
+                borderRadius={theme.radius.lg}
+                striped
+                totalRecords={pagination?.totalRecords}
+                recordsPerPage={pagination.pageSize}
+                page={pagination.page}
+                onPageChange={handlePageChange}
+                onRecordsPerPageChange={handlePageSizeChange}
+                recordsPerPageOptions={PAGE_SIZES}
+                sortStatus={pagination.sortStatus}
+                onSortStatusChange={handleSortChange}
+                paginationSize="md"
+                paginationText={({from, to, totalRecords}) =>
+                    `Records ${from} - ${to} of ${totalRecords}`
+                }
+                paginationWrapBreakpoint="sm"
+                styles={{
+                    root: {
+                        width: "100%",
+                        minHeight: '25vh'
+                    },
+                    td: {
+                        padding: 0,
+                    },
+                }}
                 groups={[
                     {
                         id: 'student',

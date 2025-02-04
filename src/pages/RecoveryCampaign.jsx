@@ -85,7 +85,7 @@ export default function RecoveryCampaign() {
             ...utils.colPros,
             render: (record) => (
                 <div className={`w-full flex items-center justify-center`}>
-                    <ActionIcon onClick={() => handleTallySync(record)} size={"md"}>
+                    <ActionIcon disabled={record?.status !== 'Active'} onClick={() => handleTallySync(record)} size={"md"}>
                         <RefreshCw size={14}/>
                     </ActionIcon>
                 </div>

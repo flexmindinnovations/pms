@@ -6,6 +6,7 @@ import {useHttp} from "@hooks/AxiosInstance.js";
 import {useApiConfig} from "@context/ApiConfig.jsx";
 import {utils} from "../utils.js";
 import {CreateUpdateRecoveryAgent} from "../models/CreateUpdateRecoveryAgent.jsx";
+import {RecoveryAgentDetails} from "@models/RecoveryAgentDetails.jsx";
 
 export default function RecoveryAgent() {
     const [dataSource, setDataSource] = useState(null);
@@ -22,7 +23,8 @@ export default function RecoveryAgent() {
             ...utils.colPros,
             render: (record) => (
                 <div className={`w-full text-start px-4`}>
-                    <Anchor c={theme.colors.blue[6]} size={'sm'} onClick={() => handleLinkClick(record)}>
+                    <Anchor c={theme.colors.blue[6]} size={'sm'}
+                            onClick={() => handleLinkClick(record, 'recoveryAgent')}>
                         {record.name}
                     </Anchor>
                 </div>
@@ -84,8 +86,25 @@ export default function RecoveryAgent() {
         });
     }
 
-    const handleLinkClick = (record) => {
+    const handleLinkClick = (record, user) => {
+        switch (user) {
+            case 'recoveryAgent': {
+                openDetailsModel(record, RecoveryAgentDetails, 'Recovery Agent', 'view')
+                break;
+            }
+        }
+    }
 
+    const openDetailsModel = (data, component, title, mode) => {
+        openModal({
+            data,
+            Component: component,
+            isAddEdit: mode !== 'edit',
+            withCloseButton: true,
+            size: mode === 'edit' ? 'lg' : 'md',
+            title,
+            isView: mode !== 'edit',
+        })
     }
 
     const handleOnDelete = async (data) => {

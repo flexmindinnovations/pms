@@ -9,10 +9,10 @@ import utc from "dayjs/plugin/utc.js";
 import tz from "dayjs/plugin/timezone.js";
 import {StudentDetails} from "../models/StudentDetails.jsx";
 import {RecoveryAgentDetails} from "../models/RecoveryAgentDetails.jsx";
-import {data, useLocation, useParams} from "react-router-dom";
+import {useLocation, useParams} from "react-router-dom";
 import {CreateUpdateFollowUp} from "@models/CreateUpdateFollowUp.jsx"
 import {motion} from 'motion/react';
-import { Plus } from 'lucide-react';
+import {Plus} from 'lucide-react';
 
 dayjs.extend(utc);
 dayjs.extend(tz);
@@ -64,14 +64,14 @@ export default function FollowUp() {
     }
 
 
-
     const openAddEditModal = ({data = {}, mode = 'add'}) => {
         openModal({
             Component: CreateUpdateFollowUp,
             data,
             mode,
             title: 'Follow Up',
-            handleRefresh: () => {() => {}}
+            handleRefresh: () => {
+            }
         });
     }
 
@@ -104,79 +104,84 @@ export default function FollowUp() {
         openAddEditModal({data, mode: 'add'});
     }
 
-    if (!dataSource.length) {
-        return (
-            <Container className={`h-full w-full flex items-center justify-center`}>
-                {
-                    isLoading ? (
-                            <Loader/>
-                        ) :
-                        <Text opacity={0.8}>
-                            No following ups!
-                        </Text>
-                }
-            </Container>
-        )
-    }
-
     return (
-        <Container fluid p={0} m={0} className={`w-full h-full flex flex-col items-center justify-center`}>
+        <Container fluid p={0} m={0} className={`w-full h-full flex flex-col items-center justify-start`}>
             <div className={`w-full flex items-center justify-end`}>
                 <Button leftSection={<Plus size={16}/>} onClick={handleAddFollowUp}>
                     Follow Up
                 </Button>
             </div>
-            <motion.div
-                variants={utils.parentVariants}
-                initial={'hidden'}
-                animate={'visible'}
-                className={`mt-4 h-full w-full grid grid-cols-3 place-content-start gap-4 overflow-auto`}>
-                {
-                    dataSource?.map((record, index) => (
-                        <motion.div variants={utils.childVariants}
-                                    key={record.id + index}>
-                            <Card shadow="lg" className="max-h-[21rem]" p={20} withBorder key={record.id}>
-                                <Grid>
-                                    <Grid.Col span={8}>
-                                        <Text opacity={0.6} size={"sm"} weight={500}>Agent Name:</Text>
-                                        <Text>
-                                            <Anchor onClick={handleLinkClick}>
-                                                {record.recoveryAgentDto.name}
-                                            </Anchor>
-                                        </Text>
-                                    </Grid.Col>
-                                    <Grid.Col span={8}>
-                                        <Text opacity={0.6} size={"sm"} weight={500}>Email:</Text>
-                                        <Text>{record.recoveryAgentDto.email}</Text>
-                                    </Grid.Col>
-                                    <Grid.Col span={4}>
-                                        <Text opacity={0.6} size={"sm"} weight={500}>Contact:</Text>
-                                        <Text>{record.recoveryAgentDto.contact}</Text>
-                                    </Grid.Col>
-                                    <Grid.Col span={8}>
-                                        <Text opacity={0.6} size={"sm"} weight={500}>Commitment Date:</Text>
-                                        <Text>{dayjs(record.committmentDate).format('MM/DD/YYYY')}</Text>
-                                    </Grid.Col>
-                                    <Grid.Col span={4}>
-                                        <Text opacity={0.6} size={"sm"} weight={500}>Commitment Amount:</Text>
-                                        <Text>₹{record.committmentAmount?.toLocaleString()}</Text>
-                                    </Grid.Col>
-                                    <Grid.Col span={8}>
-                                        <Text opacity={0.6} size={"sm"} weight={500}>Last Call:</Text>
-                                        <Text>{dayjs.utc(record.timestamp).tz('Asia/Kolkata').format('MMMM D, YYYY h:mm A')}</Text>
-                                    </Grid.Col>
-                                    <Grid.Col span={12}>
-                                        <Text opacity={0.6} size={'sm'} weight={500}>Remarks:</Text>
-                                        <Text style={{whiteSpace: 'pre-wrap'}}>
-                                            {record.remarks}
-                                        </Text>
-                                    </Grid.Col>
-                                </Grid>
-                            </Card>
-                        </motion.div>
-                    ))
-                }
-            </motion.div>
+            {
+                !dataSource.length ? (
+                    isLoading ? (
+                            <Loader/>
+                        ) :
+                        <div className={`h-full w-full flex items-center justify-center`}>
+                            <Text opacity={0.8}>
+                                No following ups!
+                            </Text>
+                        </div>
+                ) : (
+                    <motion.div
+                        variants={utils.parentVariants}
+                        initial={'hidden'}
+                        animate={'visible'}
+                        className={`mt-4 py-4 h-full w-full grid grid-cols-2 md:grid-cols-2 lg:grid-cols-2 place-content-start gap-4 overflow-auto`}>
+                        {
+                            dataSource?.map((record, index) => (
+                                <motion.div variants={utils.childVariants}
+                                            key={record.id + index}>
+                                    <Card shadow="lg" className="max-h-[24rem] lg:max-h-[26rem] xl:max-h-[21rem]" p={20}
+                                          withBorder key={record.id}>
+                                        <Grid>
+                                            <Grid.Col span={{base: 8, sm: 12, md: 12, lg: 8, xl: 8}}>
+                                                <Text size={'sm'} opacity={0.6} size={"sm"} weight={500}>Agent
+                                                    Name:</Text>
+                                                <Text size={'sm'}>
+                                                    <Anchor onClick={handleLinkClick}>
+                                                        {record.recoveryAgentDto.name}
+                                                    </Anchor>
+                                                </Text>
+                                            </Grid.Col>
+                                            <Grid.Col span={{base: 8, sm: 12, md: 12, lg: 8, xl: 8}}>
+                                                <Text size={'sm'} opacity={0.6} size={"sm"} weight={500}>Email:</Text>
+                                                <Text size={'sm'}>{record.recoveryAgentDto.email}</Text>
+                                            </Grid.Col>
+                                            <Grid.Col span={{base: 8, sm: 6, md: 6, lg: 4, xl: 4}}>
+                                                <Text size={'sm'} opacity={0.6} size={"sm"} weight={500}>Contact:</Text>
+                                                <Text size={'sm'}>{record.recoveryAgentDto.contact}</Text>
+                                            </Grid.Col>
+                                            <Grid.Col span={{base: 8, sm: 6, md: 6, lg: 8, xl: 8}}>
+                                                <Text size={'sm'} opacity={0.6} size={"sm"} weight={500}>Commitment
+                                                    Date:</Text>
+                                                <Text
+                                                    size={'sm'}>{dayjs(record.committmentDate).format('MM/DD/YYYY')}</Text>
+                                            </Grid.Col>
+                                            <Grid.Col span={{base: 8, sm: 6, md: 6, lg: 8, xl: 8}}>
+                                                <Text size={'sm'} opacity={0.6} size={"sm"} weight={500}>Commitment
+                                                    Amount:</Text>
+                                                <Text size={'sm'}>₹{record.committmentAmount?.toLocaleString()}</Text>
+                                            </Grid.Col>
+                                            <Grid.Col span={{base: 8, sm: 6, md: 6, lg: 8, xl: 8}}>
+                                                <Text size={'sm'} opacity={0.6} size={"sm"} weight={500}>Last
+                                                    Call:</Text>
+                                                <Text
+                                                    size={'sm'}>{dayjs.utc(record.timestamp).tz('Asia/Kolkata').format('MMMM D, YYYY h:mm A')}</Text>
+                                            </Grid.Col>
+                                            <Grid.Col span={12}>
+                                                <Text size={'sm'} opacity={0.6} size={'sm'} weight={500}>Remarks:</Text>
+                                                <Text size={'sm'} style={{whiteSpace: 'pre-wrap'}}>
+                                                    {record.remarks}
+                                                </Text>
+                                            </Grid.Col>
+                                        </Grid>
+                                    </Card>
+                                </motion.div>
+                            ))
+                        }
+                    </motion.div>
+                )
+            }
         </Container>
     )
 }

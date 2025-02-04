@@ -1,4 +1,4 @@
-import {Anchor, Container, useMantineTheme} from "@mantine/core";
+import {Anchor, Text, Container, useMantineTheme} from "@mantine/core";
 import {useCallback, useEffect, useMemo, useState} from "react";
 import {DataTableWrapper} from "@components/DataTableWrapper.jsx";
 import {utils} from "../utils.js";
@@ -23,9 +23,10 @@ export default function Students() {
             ...utils.colPros,
             render: (record) => (
                 <div className={`w-full text-left px-4`}>
-                    <Anchor c={theme.colors.blue[6]} size={'sm'} onClick={() => handleLinkClick(record)}>
-                        {record.name}
-                    </Anchor>
+                    {/*<Anchor c={theme.colors.blue[6]} size={'sm'} onClick={() => handleLinkClick(record)}>*/}
+                    {/*    {record.name}*/}
+                    {/*</Anchor>*/}
+                    <p className={`px-4 text-start`}>{record.name}</p>
                 </div>
             )
         },

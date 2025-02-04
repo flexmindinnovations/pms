@@ -39,7 +39,7 @@ export function CreateUpdateFollowUp({
     });
     const [isLoading, setIsLoading] = useState(false);
     const theme = useMantineTheme();
-    const {openModal} = useModal();
+    const {post, put} = useHttp();
     const apiConfig = useApiConfig();
 
     const handleLinkClick = (record) => {
