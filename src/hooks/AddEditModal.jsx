@@ -15,6 +15,7 @@ export function useModal(handleRefresh) {
              fullScreen = false,
              isView = false,
              handleRefresh,
+             withCloseButton = false
          }) => {
             modals.closeAll();
             modals.open({
@@ -23,7 +24,7 @@ export function useModal(handleRefresh) {
                 trapFocus: false,
                 size,
                 fullScreen,
-                withCloseButton: fullScreen ? true : false,
+                withCloseButton,
                 classNames: {
                     body: `${props} !p-0 !overflow-hidden`,
                 },

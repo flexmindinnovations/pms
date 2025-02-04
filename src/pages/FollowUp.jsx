@@ -1,6 +1,6 @@
 import {useEffect, useState} from "react";
 import {useModal} from "@hooks/AddEditModal.jsx";
-import {Anchor, Card, Container, Grid, Loader, Text, useMantineTheme} from "@mantine/core";
+import {Anchor, Button, Card, Container, Grid, Loader, Text, useMantineTheme} from "@mantine/core";
 import {useHttp} from "@hooks/AxiosInstance.js";
 import {useApiConfig} from "@context/ApiConfig.jsx";
 import {utils} from "../utils.js";
@@ -9,25 +9,15 @@ import utc from "dayjs/plugin/utc.js";
 import tz from "dayjs/plugin/timezone.js";
 import {StudentDetails} from "../models/StudentDetails.jsx";
 import {RecoveryAgentDetails} from "../models/RecoveryAgentDetails.jsx";
-import {useLocation, useParams} from "react-router-dom";
+import {data, useLocation, useParams} from "react-router-dom";
 import {CreateUpdateFollowUp} from "@models/CreateUpdateFollowUp.jsx"
 import {motion} from 'motion/react';
+import { Plus } from 'lucide-react';
 
 dayjs.extend(utc);
 dayjs.extend(tz);
 
 export default function FollowUp() {
-    /*
-    * id
-    * CampaignId
-    * StudentId
-    * RecoveryAgentId
-    * CommitmentAmount
-    * CommitmentDate
-    * Remarks
-    * Timestamp
-    * No Of Calls => Last Caller
-    * */
     const [dataSource, setDataSource] = useState([]);
     const [isLoading, setIsLoading] = useState(true);
     const {openModal} = useModal();
@@ -39,7 +29,7 @@ export default function FollowUp() {
     useEffect(() => {
         const followUps = location.state.followups || [];
         setTimeout(() => {
-            setDataSource(followUps || []);
+            const sortedFollowUps = followUps.sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp));
             setIsLoading(false);
         }, 1500)
     }, [])
@@ -55,9 +45,7 @@ export default function FollowUp() {
         }
     }
 
-    const handleOnAddEdit = (data, mode) => {
-        openAddEditModal({data, mode});
-    }
+
 
     const openAddEditModal = ({data = {}, mode = 'add'}) => {
         openModal({
@@ -94,6 +82,11 @@ export default function FollowUp() {
         }
     }
 
+    const handleAddFollowUp = () => {
+        const data = {campaignId, ...location.state};
+        openAddEditModal({data, mode: 'add'});
+    }
+
     if (!dataSource.length) {
         return (
             <Container className={`h-full w-full flex items-center justify-center`}>
@@ -110,7 +103,12 @@ export default function FollowUp() {
     }
 
     return (
-        <Container fluid p={0} m={0} className={`w-full h-full flex items-center justify-center`}>
+        <Container fluid p={0} m={0} className={`w-full h-full flex flex-col items-center justify-center`}>
+            <div className={`w-full flex items-center justify-end`}>
+                <Button leftSection={<Plus size={16}/>} onClick={handleAddFollowUp}>
+                    Follow Up
+                </Button>
+            </div>
             <motion.div
                 variants={utils.parentVariants}
                 initial={'hidden'}
@@ -122,29 +120,29 @@ export default function FollowUp() {
                                     key={record.id + index}>
                             <Card shadow="lg" className="max-h-[21rem]" p={20} withBorder key={record.id}>
                                 <Grid>
-                                    <Grid.Col span={12}>
+                                    <Grid.Col span={8}>
                                         <Text opacity={0.6} size={"sm"} weight={500}>Agent Name:</Text>
                                         <Text>
-                                            <Anchor c={theme.colors.blue[6]} onClick={handleLinkClick}>
+                                            <Anchor onClick={handleLinkClick}>
                                                 {record.recoveryAgentDto.name}
                                             </Anchor>
                                         </Text>
                                     </Grid.Col>
-                                    <Grid.Col span={6}>
+                                    <Grid.Col span={8}>
                                         <Text opacity={0.6} size={"sm"} weight={500}>Email:</Text>
                                         <Text>{record.recoveryAgentDto.email}</Text>
                                     </Grid.Col>
-                                    <Grid.Col span={6}>
+                                    <Grid.Col span={4}>
                                         <Text opacity={0.6} size={"sm"} weight={500}>Contact:</Text>
                                         <Text>{record.recoveryAgentDto.contact}</Text>
                                     </Grid.Col>
-                                    <Grid.Col span={6}>
-                                        <Text opacity={0.6} size={"sm"} weight={500}>Commitment Amount:</Text>
-                                        <Text>₹{record.committmentAmount?.toLocaleString()}</Text>
-                                    </Grid.Col>
-                                    <Grid.Col span={6}>
+                                    <Grid.Col span={8}>
                                         <Text opacity={0.6} size={"sm"} weight={500}>Commitment Date:</Text>
                                         <Text>{dayjs(record.committmentDate).format('MM/DD/YYYY')}</Text>
+                                    </Grid.Col>
+                                    <Grid.Col span={4}>
+                                        <Text opacity={0.6} size={"sm"} weight={500}>Commitment Amount:</Text>
+                                        <Text>₹{record.committmentAmount?.toLocaleString()}</Text>
                                     </Grid.Col>
                                     <Grid.Col span={8}>
                                         <Text opacity={0.6} size={"sm"} weight={500}>Last Call:</Text>
