@@ -36,6 +36,9 @@ export default function Layout() {
         let _menuItems = utils.menuItems;
         if (_menuItems.length) {
             let activePath = pathname;
+            if(pathname.includes('campaign-details')) {
+                activePath = '/';
+            }
             if (sessionStorage.getItem('currentItem')) activePath = sessionStorage.getItem('currentItem');
             _menuItems = _menuItems.map(item => ({
                 ...item,

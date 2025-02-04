@@ -30,8 +30,9 @@ export default function FollowUp() {
         const followUps = location.state.followups || [];
         setTimeout(() => {
             const sortedFollowUps = followUps.sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp));
+            setDataSource(sortedFollowUps);
             setIsLoading(false);
-        }, 1500)
+        }, 1000)
     }, [])
 
     const handleLinkClick = (record, src) => {
@@ -113,7 +114,7 @@ export default function FollowUp() {
                 variants={utils.parentVariants}
                 initial={'hidden'}
                 animate={'visible'}
-                className={`mt-4 h-full w-full grid gap-3 grid-cols-3 overflow-auto`}>
+                className={`mt-4 h-full w-full grid grid-cols-3 place-content-start gap-4 overflow-auto`}>
                 {
                     dataSource?.map((record, index) => (
                         <motion.div variants={utils.childVariants}

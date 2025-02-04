@@ -99,8 +99,9 @@ export default function Login() {
             const response = await post(apiConfig.recoveryAgent.create, payload);
             if (response.status === 200) {
                     setTimeout(() => {
-                        navigate('/')
-                    }, 2000);
+                        navigate('/');
+                        setIsLoading(false);
+                    }, 1000);
             }
         } catch (err) {
             console.error("Error:", err);
@@ -108,7 +109,6 @@ export default function Login() {
                 <p className={`text-white`}>{err.message}</p>,
                 'error',
                 theme);
-        } finally {
             setIsLoading(false);
         }
     }
