@@ -3,6 +3,7 @@ import {
     Breadcrumbs,
     Burger,
     Button,
+    Card,
     Container,
     Group,
     Loader,
@@ -13,11 +14,11 @@ import {
 } from "@mantine/core";
 import {useDisclosure} from '@mantine/hooks'
 import {AnimatePresence, motion} from 'motion/react';
-import {Link, NavLink, Outlet, useLocation} from 'react-router-dom';
+import {Link, Outlet, useLocation} from 'react-router-dom';
 import {createElement, useEffect, useState} from "react";
 import {utils} from "../utils.js";
 import styles from '@styles/Layout.module.css';
-import {Home, LogOut} from 'lucide-react';
+import {Home, LogOut, CircleUserRound } from 'lucide-react';
 import {useAuth} from "@context/AuthContext.jsx";
 import {useEncrypt} from "@hooks/EncryptData.js";
 
@@ -47,9 +48,9 @@ export default function Layout() {
             .filter((x) => x && !uuidPattern.test(x))
             .map((path) => path.replace(/-/g, " "))
             .map((path) => path.charAt(0).toUpperCase() + path.slice(1));
-        const home = <NavLink to={'/'} key={'home'}>
+        const home = <Text key={'home'}>
             <Home size={16}/>
-        </NavLink>;
+        </Text>;
         const newBreadcrumbs = pathNames
             .filter((path) => !uuidPattern.test(path))
             .map((path, index) => {
@@ -116,8 +117,11 @@ export default function Layout() {
                                 {breadcrumbs}
                             </Breadcrumbs>
                         </Group>
-                        <Group pos={'right'} gap={20}>
-                            <Text>{getEncryptedData('user')}</Text>
+                        <Group pos={'right'} gap={40}>
+                            <Card py={5} px={10} withBorder className={`!flex !flex-row items-center justify-center gap-3`}>
+                                <CircleUserRound size={18} />
+                                <Text>{getEncryptedData('user')}</Text>
+                            </Card>
                             <Button
                                 variant={"filled"}
                                 bg={theme.colors.red[6]}
