@@ -19,10 +19,10 @@ export const utils = {
             }
         })
     ),
-    pageConfig: {
-        pageNumber: 1,
-        pageSize: 15,
-    },
+    pageConfig: Object.freeze({
+        pageNumber: '1',
+        pageSize: '15',
+    }),
     colPros: {
         noWrap: true,
         textAlign: 'center',

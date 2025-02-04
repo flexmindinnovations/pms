@@ -2,26 +2,28 @@ import {createContext, useContext} from "react";
 import {utils} from "../utils.js";
 
 const endpoint = `https://test.feerecovery.shashibgroup.in/aws/Api`;
+const defaultPageNumber = typeof utils.pageConfig.pageNumber === 'object' ? 15 : utils.pageConfig.pageNumber;
+const defaultPageSize = typeof utils.pageConfig.pageSize === 'object' ? 15 : utils.pageConfig.pageSize;
 const contextConfig = {
     login: `https://test.pms.shashibgroup.in/aws/api/Authentication`,
     students: {
-        list: (pageNumber = 1, pageSize = 2) => `${endpoint}/Student/List?PageNumber=${pageNumber}&PageSize=${pageSize}`,
+        list: (pageNumber = defaultPageNumber, pageSize = defaultPageSize) => `${endpoint}/Student/List?PageNumber=${pageNumber}&PageSize=${pageSize}`,
         getById: (id) => `${endpoint}/Student?Id=${id}`,
         create: `${endpoint}/Student`,
         update: `${endpoint}/Student`,
         delete: `${endpoint}/Student`,
     },
     recoveryAgent: {
-        list: (pageNumber = 1, pageSize = 1) => `${endpoint}/RecoveryAgent/List?PageNumber=${pageNumber}&PageSize=${pageSize}`,
+        list: (pageNumber = defaultPageNumber, pageSize = defaultPageSize) => `${endpoint}/RecoveryAgent/List?PageNumber=${pageNumber}&PageSize=${pageSize}`,
         getById: (id) => `${endpoint}/RecoveryAgent?Id=${id}`,
         create: `${endpoint}/RecoveryAgent`,
         update: `${endpoint}/RecoveryAgent`,
         delete: `${endpoint}/RecoveryAgent`,
     },
     recoveryCampaign: {
-        list: (pageNumber = utils.pageConfig.pageNumber, pageSize = utils.pageConfig.pageSize) => `${endpoint}/RecoveryCampaign/List?PageNumber=${pageNumber}&PageSize=${pageSize}`,
+        list: (pageNumber = defaultPageNumber, pageSize = defaultPageSize) => `${endpoint}/RecoveryCampaign/List?PageNumber=${pageNumber}&PageSize=${pageSize}`,
         getById: (id) => `${endpoint}/RecoveryCampaign?Id=${id}`,
-        details: (id, pageNumber = utils.pageConfig.pageNumber, pageSize = utils.pageConfig.pageSize) => `${endpoint}/CampaignDetail/List?RecoveryCampaignId=${id}&PageNumber=${pageNumber}&PageSize=${pageSize}`,
+        details: (id, pageNumber = defaultPageNumber, pageSize = defaultPageSize) => `${endpoint}/CampaignDetail/List?RecoveryCampaignId=${id}&PageNumber=${pageNumber}&PageSize=${pageSize}`,
         activate: `${endpoint}/RecoveryCampaign/Activate`,
         create: `${endpoint}/RecoveryCampaign`,
         update: `${endpoint}/RecoveryCampaign`,
@@ -29,7 +31,7 @@ const contextConfig = {
         tallySync: `${endpoint}/RecoveryCampaign/TallySync`,
     },
     followUp: {
-        list: (pageNumber = 1, pageSize = 1) => `${endpoint}/FollowUp/List?PageNumber=${pageNumber}&PageSize=${pageSize}`,
+        list: (pageNumber = defaultPageNumber, pageSize = defaultPageSize) => `${endpoint}/FollowUp/List?PageNumber=${pageNumber}&PageSize=${pageSize}`,
         getById: (id) => `${endpoint}/FollowUp?Id=${id}`,
         create: `${endpoint}/FollowUp`,
         update: `${endpoint}/FollowUp`,

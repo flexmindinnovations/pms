@@ -96,6 +96,7 @@ export default function Students() {
     const getStudentList = useCallback(async (
         pageNumber = utils.pageConfig.pageNumber,
         pageSize = utils.pageConfig.pageSize) => {
+        setIsLoading(true);
         try {
             const response = await get(apiConfig.students.list(pageNumber, pageSize));
             if (response.status === 200) {
@@ -165,7 +166,7 @@ export default function Students() {
                 handleOnAdd={() => handleOnAddEdit(null, "add")}
                 handleOnEdit={(data) => handleOnAddEdit(data, 'edit')}
                 handleOnDelete={(data) => handleOnDelete(data)}
-                onRefresh={getStudentList}
+                onRefresh={() => getStudentList()}
             />
         </Container>
     )
