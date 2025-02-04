@@ -55,8 +55,8 @@ export default function RecoveryCampaign() {
         {
             accessor: 'status',
             title: 'Status',
-            minWidth: 40,
             ...utils.colPros,
+            width: 100,
             render: (record) => (
                 <div className={`px-4`}>
                     <Card p={2} py={4} c={record?.status === 'Active' ? theme.colors.green[9] : theme.colors.red[9]}
@@ -85,7 +85,8 @@ export default function RecoveryCampaign() {
             ...utils.colPros,
             render: (record) => (
                 <div className={`w-full flex items-center justify-center`}>
-                    <ActionIcon disabled={record?.status !== 'Active'} onClick={() => handleTallySync(record)} size={"md"}>
+                    <ActionIcon disabled={record?.status !== 'Active'} onClick={() => handleTallySync(record)}
+                                size={"md"}>
                         <RefreshCw size={14}/>
                     </ActionIcon>
                 </div>
@@ -112,7 +113,9 @@ export default function RecoveryCampaign() {
         }
     }
 
-    const getRecoveryCampaignList = useCallback(async (pageNumber = (utils.pageConfig.pageNumber || 1), pageSize = (utils.pageConfig.pageSize || 15)) => {
+    const getRecoveryCampaignList = useCallback(async (
+        pageNumber = utils.pageConfig.pageNumber,
+        pageSize = utils.pageConfig.pageSize) => {
         setIsLoading(true);
         try {
             const response = await get(apiConfig.recoveryCampaign.list(pageNumber, pageSize));
@@ -143,7 +146,7 @@ export default function RecoveryCampaign() {
             isAddEdit: true,
             mode,
             title: 'Recovery Campaign',
-            handleRefresh: getRecoveryCampaignList
+            handleRefresh: () => getRecoveryCampaignList()
         });
     }
 
@@ -178,7 +181,8 @@ export default function RecoveryCampaign() {
                 handleOnAdd={() => handleOnAddEdit(null)}
                 handleOnEdit={(data) => handleOnAddEdit(data, 'edit')}
                 handleOnDelete={(data) => handleOnDelete(data)}
-                onRefresh={() => getRecoveryCampaignList()}
+                onRefresh={() => getRecoveryCampaignList(null)}
+                onPageChange={getRecoveryCampaignList}
             />
         </Container>
     )

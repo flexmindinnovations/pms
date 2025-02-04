@@ -1,7 +1,7 @@
 import {useCallback} from 'react';
 import {modals} from '@mantine/modals';
 
-export function useModal(handleRefresh) {
+export function useModal() {
 
     const openModal = useCallback(
         ({
@@ -37,14 +37,14 @@ export function useModal(handleRefresh) {
                         data={data}
                         handleCancel={(event) => {
                             const {refresh} = event;
-                            if (refresh) handleRefresh({refresh});
+                            if (refresh) handleRefresh();
                             modals.closeAll();
                         }}
                     />
                 ),
             });
         },
-        [handleRefresh]
+        []
     );
 
     return {openModal};

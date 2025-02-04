@@ -30,12 +30,6 @@ export function CreateUpdateStudent({data = {}, mode = 'add', handleCancel, onAd
         },
         validate: {
             name: (value) => (value.length > 0 ? null : 'Name is required'),
-            instituteName: (value) => (value.length > 0 ? null : 'Institute is required'),
-            batch: (value) => (value.length > 0 ? null : 'Batch is required'),
-            // phone: (value) => (/^\d{10}$/.test(value) ? null : 'Phone number must be 10 digits'),
-            // gaurdianPhone: (value) => (/^\d{10}$/.test(value) ? null : 'Guardian phone number must be 10 digits'),
-            email: (value) => (/^\S+@\S+\.\S+$/.test(value) ? null : 'Invalid email format'),
-            gaurdianEmail: (value) => (/^\S+@\S+\.\S+$/.test(value) ? null : 'Invalid guardian email format'),
         },
         enhanceGetInputProps: () => ({disabled: disableForm}),
     });
@@ -80,7 +74,6 @@ export function CreateUpdateStudent({data = {}, mode = 'add', handleCancel, onAd
                             label="Institute"
                             placeholder="Enter institute name"
                             {...form.getInputProps('instituteName')}
-                            required
                         />
                     </Grid.Col>
 
@@ -89,7 +82,6 @@ export function CreateUpdateStudent({data = {}, mode = 'add', handleCancel, onAd
                             label="Batch"
                             placeholder="Enter batch"
                             {...form.getInputProps('batch')}
-                            required
                         />
                     </Grid.Col>
                     <Grid.Col span={6}>
@@ -97,7 +89,6 @@ export function CreateUpdateStudent({data = {}, mode = 'add', handleCancel, onAd
                             label="Phone"
                             placeholder="Enter phone number"
                             {...form.getInputProps('phone')}
-                            required
                             type="tel"
                         />
                     </Grid.Col>
@@ -107,7 +98,6 @@ export function CreateUpdateStudent({data = {}, mode = 'add', handleCancel, onAd
                             label="Guardian Phone"
                             placeholder="Enter guardian's phone number"
                             {...form.getInputProps('gaurdianPhone')}
-                            required
                             type="tel"
                         />
                     </Grid.Col>
@@ -116,7 +106,6 @@ export function CreateUpdateStudent({data = {}, mode = 'add', handleCancel, onAd
                             label="Email"
                             placeholder="Enter email address"
                             {...form.getInputProps('email')}
-                            required
                             type="email"
                         />
                     </Grid.Col>
@@ -126,7 +115,6 @@ export function CreateUpdateStudent({data = {}, mode = 'add', handleCancel, onAd
                             label="Guardian Email"
                             placeholder="Enter guardian's email address"
                             {...form.getInputProps('gaurdianEmail')}
-                            required
                             type="email"
                         />
                     </Grid.Col>

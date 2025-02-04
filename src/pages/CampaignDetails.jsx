@@ -11,7 +11,6 @@ import utc from "dayjs/plugin/utc.js";
 import tz from "dayjs/plugin/timezone.js";
 import {useModal} from "@hooks/AddEditModal.jsx";
 import {RecoveryAgentDetails} from "@models/RecoveryAgentDetails.jsx";
-import {StudentDetails} from "@models/StudentDetails.jsx";
 import {CreateUpdateStudent} from "@models/CreateUpdateStudent.jsx";
 
 dayjs.extend(utc);
@@ -48,7 +47,7 @@ export default function CampaignDetails() {
             },
             render: (record) => (
                 <div className={`bg-white w-full flex items-center justify-center`}>
-                    <ActionIcon onClick={() => openFollowUpModal(record)} size={"md"}>
+                    <ActionIcon onClick={() => navigateToFollowUp(record)} size={"md"}>
                         <ExternalLink size={14}/>
                     </ActionIcon>
                 </div>
@@ -64,7 +63,7 @@ export default function CampaignDetails() {
             render: (record) => (
                 <div className={`w-full text-left px-4 py-2`}>
                     <Anchor c={theme.colors.blue[6]} size={'md'} onClick={() => handleLinkClick(record, 'student')}>
-                        {record.name}
+                        {record?.studentDto?.name}
                     </Anchor>
                 </div>
             )
@@ -76,7 +75,7 @@ export default function CampaignDetails() {
             ...utils.colPros,
             width: 220,
             render: (record) => (
-                <p className={`px-4 py-2 text-base text-start`}>{record.instituteName}</p>
+                <p className={`px-4 py-2 text-base text-start`}>{record?.studentDto?.instituteName}</p>
             ),
         },
         {
@@ -86,7 +85,7 @@ export default function CampaignDetails() {
             ...utils.colPros,
             width: 200,
             render: (record) => (
-                <p className={`px-4 py-2 text-base text-start`}>{record.batch}</p>
+                <p className={`px-4 py-2 text-base text-start`}>{record?.studentDto?.batch}</p>
             ),
         },
         {
@@ -95,7 +94,7 @@ export default function CampaignDetails() {
             minWidth: 120,
             ...utils.colPros,
             render: (record) => (
-                <p className={`px-4 py-2 text-base text-start`}>{record.phone}</p>
+                <p className={`px-4 py-2 text-base text-start`}>{record?.studentDto?.phone}</p>
             ),
         },
     ]
@@ -192,20 +191,6 @@ export default function CampaignDetails() {
         ) || [];
     }, [searchQuery, dataSource]);
 
-    useEffect(() => {
-        if (!dataSource?.items?.length) return;
-        setPagination((prev) => ({
-            ...prev,
-            page: dataSource.pageNumber || 1,
-            totalRecords: dataSource.totalCount || 0,
-            hasPreviousPage: !!dataSource.hasPreviousPage,
-            hasNextPage: !!dataSource.hasNextPage,
-        }));
-        filteredData.slice(
-            (pagination.page - 1) * pagination.pageSize,
-            pagination.page * pagination.pageSize
-        )
-    }, [dataSource]);
 
     const handleSortChange = useCallback((sortStatus) => {
         setPagination((prev) => ({...prev, sortStatus}));
@@ -225,7 +210,7 @@ export default function CampaignDetails() {
         getCampaignDetails(page, pageSize).then();
     };
 
-    const openFollowUpModal = (record) => {
+    const navigateToFollowUp = (record) => {
         navigate(`/campaign-details/${campaignId}/follow-up`, {state: record});
     }
 
@@ -253,6 +238,8 @@ export default function CampaignDetails() {
             size: mode === 'edit' ? 'lg' : 'md',
             title,
             isView: mode !== 'edit',
+            handleRefresh: () => {
+            }
         })
     }
 
@@ -260,25 +247,35 @@ export default function CampaignDetails() {
         getCampaignDetails().then();
     }, []);
 
-    const getCampaignDetails = useCallback(async (pageNumber = utils.pageConfig.pageNumber, pageSize = utils.pageConfig.pageSize) => {
+    const getCampaignDetails = useCallback(async (
+        pageNumber = utils.pageConfig.pageNumber,
+        pageSize = utils.pageConfig.pageSize) => {
         setIsLoading(true);
         try {
             const response = await get(apiConfig.recoveryCampaign.details(campaignId, pageNumber, pageSize));
             if (response.status === 200) {
                 const data = response.data;
                 const newDataSource = {
-                    ...data,
                     items: data?.items.map((record) => {
                         return {
                             ...record,
-                            followups: record.followups,
                             followUp: record.followups.reduce((latest, current) => {
                                 return dayjs(current.timestamp).isAfter(dayjs(latest.timestamp)) ? current : latest;
-                            }, record.followups[0]),
-                            ...record.studentDto
+                            }, record.followups[0])
                         }
                     })
                 }
+                setPagination((prev) => ({
+                    ...prev,
+                    page: data.pageNumber || 1,
+                    totalRecords: data.totalCount || 0,
+                    hasPreviousPage: !!data.hasPreviousPage,
+                    hasNextPage: !!data.hasNextPage,
+                }));
+                filteredData.slice(
+                    (pagination.page - 1) * pagination.pageSize,
+                    pagination.page * pagination.pageSize
+                )
                 setDataSource(newDataSource);
             }
         } catch (err) {

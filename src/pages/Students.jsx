@@ -168,6 +168,7 @@ export default function Students() {
                 handleOnEdit={(data) => handleOnAddEdit(data, 'edit')}
                 handleOnDelete={(data) => handleOnDelete(data)}
                 onRefresh={() => getStudentList()}
+                onPageChange={getStudentList}
             />
         </Container>
     )

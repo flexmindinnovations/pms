@@ -38,6 +38,7 @@ export function DataTableWrapper({
                                      canEdit = true,
                                      canDelete = true,
                                      showRefreshButton = true,
+    onPageChange,
                                  }) {
     const [pagination, setPagination] = useState({
         page: dataSource?.pageNumber || 1,
@@ -142,7 +143,7 @@ export function DataTableWrapper({
     };
 
     const fetchData = ({page, pageSize}) => {
-        onRefresh(page, pageSize);
+        onPageChange(page, pageSize);
     };
 
     return (

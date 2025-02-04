@@ -82,7 +82,7 @@ export default function RecoveryAgent() {
             data,
             mode,
             title: 'Recovery Agent',
-            handleRefresh: getRecoveryAgentList().then()
+            handleRefresh: () => getRecoveryAgentList().then()
         });
     }
 
@@ -139,7 +139,8 @@ export default function RecoveryAgent() {
                 handleOnAdd={() => handleOnAddEdit(null, "add")}
                 handleOnEdit={(data) => handleOnAddEdit(data, 'edit')}
                 handleOnDelete={(data) => handleOnDelete(data)}
-                onRefresh={() => getRecoveryAgentList()}
+                onRefresh={() => getRecoveryAgentList(null)}
+                onPageChange={getRecoveryAgentList}
             />
         </Container>
     )

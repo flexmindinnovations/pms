@@ -26,13 +26,6 @@ export function CreateUpdateCampaign({data = {}, mode = 'add', handleCancel, onA
             status: formData?.status || 'Active',
             description: formData?.description || '',
         },
-        validate: {
-            name: (value) => (value.length > 0 ? null : 'Name is required'),
-            startDate: (value) => (value ? null : 'Start Date is required'),
-            endDate: (value) => (value ? null : 'End Date is required'),
-            status: (value) => (value.length > 0 ? null : 'Status is required'),
-            description: (value) => (value.length > 0 ? null : 'Description is required'),
-        },
         enhanceGetInputProps: () => ({disabled: disableForm}),
     });
 

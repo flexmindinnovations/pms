@@ -9,7 +9,7 @@ import utc from "dayjs/plugin/utc.js";
 import tz from "dayjs/plugin/timezone.js";
 import {StudentDetails} from "../models/StudentDetails.jsx";
 import {RecoveryAgentDetails} from "../models/RecoveryAgentDetails.jsx";
-import {useLocation, useParams} from "react-router-dom";
+import {useLocation, useParams, useSearchParams} from "react-router-dom";
 import {CreateUpdateFollowUp} from "@models/CreateUpdateFollowUp.jsx"
 import {motion} from 'motion/react';
 import {Plus} from 'lucide-react';
@@ -25,24 +25,23 @@ export default function FollowUp() {
     const {get, del} = useHttp();
     const apiConfig = useApiConfig();
     const location = useLocation();
+    const [params] = useSearchParams();
     const {campaignId} = useParams();
     useEffect(() => {
-        const followUps = location.state.followups || [];
         getFollowupList().then();
-        setTimeout(() => {
-            const sortedFollowUps = followUps.sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp));
-            setDataSource(sortedFollowUps);
-            setIsLoading(false);
-        }, 1500)
     }, [])
 
-    const getFollowupList = useCallback(async (pageNumber = (utils.pageConfig.pageNumber), pageSize = (utils.pageConfig.pageSize)) => {
+    const getFollowupList = useCallback(async (
+        pageNumber = utils.pageConfig.pageNumber,
+        pageSize = utils.pageConfig.pageSize) => {
         setIsLoading(true);
         try {
-            const response = await get(apiConfig.followUp.list(campaignId, pageNumber, pageSize));
+            const campaignDetailsId = location.state.followUp?.campaignDetailsId || location.state.id;
+            const response = await get(apiConfig.followUp.list(campaignDetailsId, pageNumber, pageSize));
             if (response.status === 200) {
                 const data = response.data;
-                setDataSource(data);
+                const sortedFollowUps = data.sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp));
+                setDataSource(sortedFollowUps);
             }
         } catch (err) {
             const {message} = err;
@@ -70,8 +69,7 @@ export default function FollowUp() {
             data,
             mode,
             title: 'Follow Up',
-            handleRefresh: () => {
-            }
+            handleRefresh: () => getFollowupList().then()
         });
     }
 
@@ -100,7 +98,8 @@ export default function FollowUp() {
     }
 
     const handleAddFollowUp = () => {
-        const data = {campaignId};
+        const campaignDetailsId = location.state.followUp?.campaignDetailsId || location.state.id;
+        const data = {campaignId, campaignDetailsId};
         openAddEditModal({data, mode: 'add'});
     }
 
@@ -113,14 +112,16 @@ export default function FollowUp() {
             </div>
             {
                 !dataSource.length ? (
-                    isLoading ? (
-                            <Loader/>
-                        ) :
-                        <div className={`h-full w-full flex items-center justify-center`}>
-                            <Text opacity={0.8}>
-                                No following ups!
-                            </Text>
-                        </div>
+                        isLoading ? (
+                            <div className={`h-full w-full flex items-center justify-center`}>
+                                <Loader/>
+                            </div>
+                    ) :
+                    <div className={`h-full w-full flex items-center justify-center`}>
+                        <Text opacity={0.8}>
+                            No following ups!
+                        </Text>
+                    </div>
                 ) : (
                     <motion.div
                         variants={utils.parentVariants}

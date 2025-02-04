@@ -20,14 +20,7 @@ export function CreateUpdateRecoveryAgent({data = {}, mode = 'add', handleCancel
             email: formData?.email || '',
             contact: formData?.contact || '',
         },
-        enhanceGetInputProps: () => ({disabled: disableForm}),
-        validate: {
-            name: (value) => (value.length < 3 ? 'Name should have at least 3 characters' : null),
-            email: (value) =>
-                /^\S+@\S+\.\S+$/.test(value) ? null : 'Please enter a valid email address',
-            contact: (value) =>
-                /^\d{10}$/.test(value) ? null : 'Contact number should be 10 digits',
-        },
+        enhanceGetInputProps: () => ({disabled: disableForm})
     });
     const [isLoading, setIsLoading] = useState(false);
     const theme = useMantineTheme();
