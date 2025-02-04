@@ -184,14 +184,18 @@ export default function CampaignDetails() {
 
     const filteredData = useMemo(() => {
         const query = searchQuery.toLowerCase();
-        return dataSource?.items?.filter((record) =>
-            Object.values(record).some((value) =>
-                String(value || "").toLowerCase().includes(query)
-            )
-        ) || [];
+        if (!query) return dataSource?.items || [];
+        return dataSource?.items?.filter((record) => {
+            return (
+                Object.values(record).some((value) =>
+                    typeof value === "string" && value.toLowerCase().includes(query)
+                ) ||
+                Object.values(record.studentDto || {}).some((value) =>
+                    typeof value === "string" && value.toLowerCase().includes(query)
+                )
+            );
+        }) || [];
     }, [searchQuery, dataSource]);
-
-
     const handleSortChange = useCallback((sortStatus) => {
         setPagination((prev) => ({...prev, sortStatus}));
     }, []);
@@ -265,6 +269,7 @@ export default function CampaignDetails() {
                         }
                     })
                 }
+                setDataSource(newDataSource);
                 setPagination((prev) => ({
                     ...prev,
                     page: data.pageNumber || 1,
@@ -276,7 +281,6 @@ export default function CampaignDetails() {
                     (pagination.page - 1) * pagination.pageSize,
                     pagination.page * pagination.pageSize
                 )
-                setDataSource(newDataSource);
             }
         } catch (err) {
             const {message} = err;
@@ -331,7 +335,8 @@ export default function CampaignDetails() {
                 styles={{
                     root: {
                         width: "100%",
-                        minHeight: '25vh'
+                        minHeight: '25vh',
+                        height: 'calc(100vh - 160px)'
                     },
                     td: {
                         padding: 0,
