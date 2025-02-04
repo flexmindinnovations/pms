@@ -345,17 +345,26 @@ export default function CampaignDetails() {
                         id: 'student',
                         title: 'Student',
                         textAlign: 'center',
+                        style: {
+                            backgroundColor: theme.white,
+                        },
                         columns: studentColumns
                     },
                     {
                         id: 'follow-up',
                         title: 'Follow Up',
                         textAlign: 'center',
+                        style: {
+                            backgroundColor: theme.white,
+                        },
                         columns: followUpColumns
                     },
                     {
                         id: 'details',
                         textAlign: 'center',
+                        style: {
+                            backgroundColor: theme.white,
+                        },
                         columns: moreDetailsColumns
                     }
                 ]}
