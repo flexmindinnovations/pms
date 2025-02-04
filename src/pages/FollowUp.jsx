@@ -11,6 +11,7 @@ import {StudentDetails} from "../models/StudentDetails.jsx";
 import {RecoveryAgentDetails} from "../models/RecoveryAgentDetails.jsx";
 import {useLocation, useParams} from "react-router-dom";
 import {CreateUpdateFollowUp} from "@models/CreateUpdateFollowUp.jsx"
+import {motion} from 'motion/react';
 
 dayjs.extend(utc);
 dayjs.extend(tz);
@@ -96,61 +97,71 @@ export default function FollowUp() {
     if (!dataSource.length) {
         return (
             <Container className={`h-full w-full flex items-center justify-center`}>
-                    <Text opacity={0.8}>
-                        No following ups!
-                    </Text>
+                {
+                    isLoading ? (
+                            <Loader/>
+                        ) :
+                        <Text opacity={0.8}>
+                            No following ups!
+                        </Text>
+                }
             </Container>
         )
     }
 
     return (
-        <Container fluid p={0} m={0} className={`grid gap-3 grid-cols-3 overflow-auto`}>
-            {
-                isLoading ? (
-                        <Loader/>
-                    )
-                    :
-                    dataSource?.map((record) => (
-                        <Card shadow="lg" className="max-h-[21rem]" p={20} withBorder key={record.id}>
-                            <Grid>
-                                <Grid.Col span={12}>
-                                    <Text opacity={0.6} size={"sm"} weight={500}>Agent Name:</Text>
-                                    <Text>
-                                        <Anchor c={theme.colors.blue[6]} onClick={handleLinkClick}>
-                                            {record.recoveryAgentDto.name}
-                                        </Anchor>
-                                    </Text>
-                                </Grid.Col>
-                                <Grid.Col span={6}>
-                                    <Text opacity={0.6} size={"sm"} weight={500}>Email:</Text>
-                                    <Text>{record.recoveryAgentDto.email}</Text>
-                                </Grid.Col>
-                                <Grid.Col span={6}>
-                                    <Text opacity={0.6} size={"sm"} weight={500}>Contact:</Text>
-                                    <Text>{record.recoveryAgentDto.contact}</Text>
-                                </Grid.Col>
-                                <Grid.Col span={6}>
-                                    <Text opacity={0.6} size={"sm"} weight={500}>Commitment Amount:</Text>
-                                    <Text>₹{record.committmentAmount?.toLocaleString()}</Text>
-                                </Grid.Col>
-                                <Grid.Col span={6}>
-                                    <Text opacity={0.6} size={"sm"} weight={500}>Commitment Date:</Text>
-                                    <Text>{dayjs(record.committmentDate).format('MM/DD/YYYY')}</Text>
-                                </Grid.Col>
-                                <Grid.Col span={8}>
-                                    <Text opacity={0.6} size={"sm"} weight={500}>Last Call:</Text>
-                                    <Text>{dayjs.utc(record.timestamp).tz('Asia/Kolkata').format('MMMM D, YYYY h:mm A')}</Text>
-                                </Grid.Col>
-                                <Grid.Col span={12}>
-                                    <Text opacity={0.6} size={'sm'} weight={500}>Remarks:</Text>
-                                    <Text style={{whiteSpace: 'pre-wrap'}}>
-                                        {record.remarks}
-                                    </Text>
-                                </Grid.Col>
-                            </Grid>
-                        </Card>
+        <Container fluid p={0} m={0} className={`w-full h-full flex items-center justify-center`}>
+            <motion.div
+                variants={utils.parentVariants}
+                initial={'hidden'}
+                animate={'visible'}
+                className={`mt-4 h-full w-full grid gap-3 grid-cols-3 overflow-auto`}>
+                {
+                    dataSource?.map((record, index) => (
+                        <motion.div variants={utils.childVariants}
+                                    key={record.id + index}>
+                            <Card shadow="lg" className="max-h-[21rem]" p={20} withBorder key={record.id}>
+                                <Grid>
+                                    <Grid.Col span={12}>
+                                        <Text opacity={0.6} size={"sm"} weight={500}>Agent Name:</Text>
+                                        <Text>
+                                            <Anchor c={theme.colors.blue[6]} onClick={handleLinkClick}>
+                                                {record.recoveryAgentDto.name}
+                                            </Anchor>
+                                        </Text>
+                                    </Grid.Col>
+                                    <Grid.Col span={6}>
+                                        <Text opacity={0.6} size={"sm"} weight={500}>Email:</Text>
+                                        <Text>{record.recoveryAgentDto.email}</Text>
+                                    </Grid.Col>
+                                    <Grid.Col span={6}>
+                                        <Text opacity={0.6} size={"sm"} weight={500}>Contact:</Text>
+                                        <Text>{record.recoveryAgentDto.contact}</Text>
+                                    </Grid.Col>
+                                    <Grid.Col span={6}>
+                                        <Text opacity={0.6} size={"sm"} weight={500}>Commitment Amount:</Text>
+                                        <Text>₹{record.committmentAmount?.toLocaleString()}</Text>
+                                    </Grid.Col>
+                                    <Grid.Col span={6}>
+                                        <Text opacity={0.6} size={"sm"} weight={500}>Commitment Date:</Text>
+                                        <Text>{dayjs(record.committmentDate).format('MM/DD/YYYY')}</Text>
+                                    </Grid.Col>
+                                    <Grid.Col span={8}>
+                                        <Text opacity={0.6} size={"sm"} weight={500}>Last Call:</Text>
+                                        <Text>{dayjs.utc(record.timestamp).tz('Asia/Kolkata').format('MMMM D, YYYY h:mm A')}</Text>
+                                    </Grid.Col>
+                                    <Grid.Col span={12}>
+                                        <Text opacity={0.6} size={'sm'} weight={500}>Remarks:</Text>
+                                        <Text style={{whiteSpace: 'pre-wrap'}}>
+                                            {record.remarks}
+                                        </Text>
+                                    </Grid.Col>
+                                </Grid>
+                            </Card>
+                        </motion.div>
                     ))
-            }
+                }
+            </motion.div>
         </Container>
     )
 }
