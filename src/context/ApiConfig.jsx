@@ -31,11 +31,11 @@ const contextConfig = {
         tallySync: `${endpoint}/RecoveryCampaign/TallySync`,
     },
     followUp: {
-        list: (pageNumber = defaultPageNumber, pageSize = defaultPageSize) => `${endpoint}/FollowUp/List?PageNumber=${pageNumber}&PageSize=${pageSize}`,
-        getById: (id) => `${endpoint}/FollowUp?Id=${id}`,
-        create: `${endpoint}/FollowUp`,
-        update: `${endpoint}/FollowUp`,
-        delete: `${endpoint}/FollowUp`,
+        list: (CampaignDetailsId, pageNumber = defaultPageNumber, pageSize = defaultPageSize) => `${endpoint}/Followup/List?CampaignDetailsId=${CampaignDetailsId}&PageNumber=${pageNumber}&PageSize=${pageSize}`,
+        getById: (id) => `${endpoint}/Followup?Id=${id}`,
+        create: `${endpoint}/Followup`,
+        update: `${endpoint}/Followup`,
+        delete: `${endpoint}/Followup`,
     }
 }
 

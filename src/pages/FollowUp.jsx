@@ -1,4 +1,4 @@
-import {useEffect, useState} from "react";
+import {useCallback, useEffect, useState} from "react";
 import {useModal} from "@hooks/AddEditModal.jsx";
 import {Anchor, Button, Card, Container, Grid, Loader, Text, useMantineTheme} from "@mantine/core";
 import {useHttp} from "@hooks/AxiosInstance.js";
@@ -28,11 +28,28 @@ export default function FollowUp() {
     const {campaignId} = useParams();
     useEffect(() => {
         const followUps = location.state.followups || [];
+        getFollowupList().then();
         setTimeout(() => {
             const sortedFollowUps = followUps.sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp));
             setDataSource(sortedFollowUps);
             setIsLoading(false);
         }, 1000)
+    }, [])
+
+    const getFollowupList = useCallback(async (pageNumber = (utils.pageConfig.pageNumber), pageSize = (utils.pageConfig.pageSize)) => {
+        setIsLoading(true);
+        try {
+            const response = await get(apiConfig.followUp.list(campaignId, pageNumber, pageSize));
+            if (response.status === 200) {
+                const data = response.data;
+                setDataSource(data);
+            }
+        } catch (err) {
+            const {message} = err;
+            utils.showNotifications('Error', message, 'error', theme);
+        } finally {
+            setIsLoading(false);
+        }
     }, [])
 
     const handleLinkClick = (record, src) => {
@@ -54,8 +71,7 @@ export default function FollowUp() {
             data,
             mode,
             title: 'Follow Up',
-            handleRefresh: () => {
-            }
+            handleRefresh: () => {() => {}}
         });
     }
 
@@ -84,7 +100,7 @@ export default function FollowUp() {
     }
 
     const handleAddFollowUp = () => {
-        const data = {campaignId, ...location.state};
+        const data = {campaignId};
         openAddEditModal({data, mode: 'add'});
     }
 
