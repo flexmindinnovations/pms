@@ -181,7 +181,7 @@ export default function RecoveryCampaign() {
                 handleOnAdd={() => handleOnAddEdit(null)}
                 handleOnEdit={(data) => handleOnAddEdit(data, 'edit')}
                 handleOnDelete={(data) => handleOnDelete(data)}
-                onRefresh={() => getRecoveryCampaignList(null)}
+                onRefresh={() => getRecoveryCampaignList()}
                 onPageChange={getRecoveryCampaignList}
             />
         </Container>

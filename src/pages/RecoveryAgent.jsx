@@ -139,7 +139,7 @@ export default function RecoveryAgent() {
                 handleOnAdd={() => handleOnAddEdit(null, "add")}
                 handleOnEdit={(data) => handleOnAddEdit(data, 'edit')}
                 handleOnDelete={(data) => handleOnDelete(data)}
-                onRefresh={() => getRecoveryAgentList(null)}
+                onRefresh={() => getRecoveryAgentList()}
                 onPageChange={getRecoveryAgentList}
             />
         </Container>
