@@ -33,7 +33,7 @@ export default function FollowUp() {
             const sortedFollowUps = followUps.sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp));
             setDataSource(sortedFollowUps);
             setIsLoading(false);
-        }, 1000)
+        }, 1500)
     }, [])
 
     const getFollowupList = useCallback(async (pageNumber = (utils.pageConfig.pageNumber), pageSize = (utils.pageConfig.pageSize)) => {
