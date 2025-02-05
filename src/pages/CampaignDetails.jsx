@@ -104,11 +104,11 @@ export default function CampaignDetails() {
             title: 'Balances',
             minWidth: 150,
             ...utils.colPros,
-            render: ({followUp}) => (
+            render: (record) => (
                 <div className={`w-full text-left px-4 py-2`}>
                     {
-                        followUp?.outstandingAmount ? (
-                                <Text className={`flex items-center`}><IndianRupee size={14}/>{followUp?.outstandingAmount}
+                        record?.outstandingAmount ? (
+                                <Text className={`flex items-center`}><IndianRupee size={14}/>{record?.outstandingAmount}
                                 </Text>
                             ) :
                             <Text>NA</Text>
