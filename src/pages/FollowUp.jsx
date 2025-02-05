@@ -135,7 +135,7 @@ export default function FollowUp() {
                                     <Card shadow="lg" className="max-h-[24rem] lg:max-h-[26rem] xl:max-h-[21rem]" p={20}
                                           withBorder key={record.id}>
                                         <Grid>
-                                            <Grid.Col span={{base: 8, sm: 12, md: 12, lg: 8, xl: 8}}>
+                                            <Grid.Col span={12}>
                                                 <Text size={'sm'} opacity={0.6} size={"sm"} weight={500}>Agent
                                                     Name:</Text>
                                                 <Text size={'sm'}>
@@ -144,26 +144,26 @@ export default function FollowUp() {
                                                     </Anchor>
                                                 </Text>
                                             </Grid.Col>
-                                            <Grid.Col span={{base: 8, sm: 12, md: 12, lg: 8, xl: 8}}>
+                                            <Grid.Col span={12}>
                                                 <Text size={'sm'} opacity={0.6} size={"sm"} weight={500}>Email:</Text>
                                                 <Text size={'sm'}>{record.recoveryAgentDto.email}</Text>
                                             </Grid.Col>
-                                            <Grid.Col span={{base: 8, sm: 6, md: 6, lg: 4, xl: 4}}>
+                                            <Grid.Col span={6}>
                                                 <Text size={'sm'} opacity={0.6} size={"sm"} weight={500}>Contact:</Text>
                                                 <Text size={'sm'}>{record.recoveryAgentDto.contact}</Text>
                                             </Grid.Col>
-                                            <Grid.Col span={{base: 8, sm: 6, md: 6, lg: 8, xl: 8}}>
+                                            <Grid.Col span={6}>
                                                 <Text size={'sm'} opacity={0.6} size={"sm"} weight={500}>Commitment
                                                     Date:</Text>
                                                 <Text
                                                     size={'sm'}>{dayjs(record.committmentDate).format('MM/DD/YYYY')}</Text>
                                             </Grid.Col>
-                                            <Grid.Col span={{base: 8, sm: 6, md: 6, lg: 8, xl: 8}}>
+                                            <Grid.Col span={6}>
                                                 <Text size={'sm'} opacity={0.6} size={"sm"} weight={500}>Commitment
                                                     Amount:</Text>
                                                 <Text size={'sm'}>₹{record.committmentAmount?.toLocaleString()}</Text>
                                             </Grid.Col>
-                                            <Grid.Col span={{base: 8, sm: 6, md: 6, lg: 8, xl: 8}}>
+                                            <Grid.Col span={6}>
                                                 <Text size={'sm'} opacity={0.6} size={"sm"} weight={500}>Last
                                                     Call:</Text>
                                                 <Text
