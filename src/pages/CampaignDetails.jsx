@@ -1,4 +1,14 @@
-import {ActionIcon, Anchor, CloseButton, Container, Text, TextInput, Tooltip, useMantineTheme} from "@mantine/core";
+import {
+    ActionIcon,
+    Anchor,
+    Card,
+    CloseButton,
+    Container,
+    Text,
+    TextInput,
+    Tooltip,
+    useMantineTheme
+} from "@mantine/core";
 import {useCallback, useEffect, useMemo, useState} from "react";
 import {useHttp} from "@hooks/AxiosInstance.js";
 import {useApiConfig} from "@context/ApiConfig.jsx";
@@ -124,6 +134,23 @@ export default function CampaignDetails() {
             render: ({followUp}) => (
                 <div className={`w-full text-left px-4 py-2`}>
                     <Text>{dayjs.utc(followUp?.timestamp).tz('Asia/Kolkata').format('MMMM D, YYYY h:mm A')}</Text>
+                </div>
+            )
+        },
+        {
+            accessor: 'isLastTallySyncSuccess',
+            title: 'TallySync',
+            minWidth: 150,
+            ...utils.colPros,
+            width: 100,
+            render: (record) => (
+                <div className={`px-4`}>
+                    <Card p={2} py={4} c={record?.isLastTallySyncSuccess ? theme.colors.green[9] : theme.colors.red[9]}
+                          withBorder
+                          bg={record?.isLastTallySyncSuccess ? theme.colors.green[1] : theme.colors.red[1]}
+                          className={`flex w-full items-center justify-center`}>
+                        <Text size={'xs'} fw={'bold'}>{record?.isLastTallySyncSuccess ? 'Success' : 'Failed'}</Text>
+                    </Card>
                 </div>
             )
         },
