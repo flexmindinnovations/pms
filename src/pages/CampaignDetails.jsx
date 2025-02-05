@@ -45,7 +45,21 @@ export default function CampaignDetails() {
     const [searchQuery, setSearchQuery] = useState("");
 
     const moreDetailsColumns = [
-
+        {
+            accessor: 'status',
+            title: 'Status',
+            minWidth: 220,
+            ...utils.colPros,
+            width: 100,
+            titleStyle: {
+                backgroundColor: theme.white
+            },
+            render: (record) => (
+                <div className={`w-full h-full !bg-white z-10`}>
+                    <p className={`px-4 !bg-white py-2 text-base text-start`}>{record?.status}</p>
+                </div>
+            ),
+        },
         {
             accessor: 'followUp',
             title: 'Follow Up',
@@ -70,8 +84,11 @@ export default function CampaignDetails() {
             title: 'Name',
             minWidth: 150,
             ...utils.colPros,
+            titleStyle: {
+                backgroundColor: theme.white
+            },
             render: (record) => (
-                <div className={`w-full text-left px-4 py-2`}>
+                <div className={`w-full text-left px-4 py-2 bg-white`}>
                     <Anchor c={theme.colors.blue[6]} size={'md'} onClick={() => handleLinkClick(record, 'student')}>
                         {record?.studentDto?.name}
                     </Anchor>
@@ -138,23 +155,6 @@ export default function CampaignDetails() {
             )
         },
         {
-            accessor: 'isLastTallySyncSuccess',
-            title: 'TallySync',
-            minWidth: 150,
-            ...utils.colPros,
-            width: 100,
-            render: (record) => (
-                <div className={`px-4`}>
-                    <Card p={2} py={4} c={record?.isLastTallySyncSuccess ? theme.colors.green[9] : theme.colors.red[9]}
-                          withBorder
-                          bg={record?.isLastTallySyncSuccess ? theme.colors.green[1] : theme.colors.red[1]}
-                          className={`flex w-full items-center justify-center`}>
-                        <Text size={'xs'} fw={'bold'}>{record?.isLastTallySyncSuccess ? 'Success' : 'Failed'}</Text>
-                    </Card>
-                </div>
-            )
-        },
-        {
             accessor: 'noOfCalls',
             title: 'No. of Calls',
             minWidth: 80,
@@ -204,6 +204,23 @@ export default function CampaignDetails() {
                             ) :
                             <Text>NA</Text>
                     }
+                </div>
+            )
+        },
+        {
+            accessor: 'isLastTallySyncSuccess',
+            title: 'TallySync',
+            minWidth: 150,
+            ...utils.colPros,
+            width: 100,
+            render: (record) => (
+                <div className={`px-4`}>
+                    <Card p={2} py={4} c={record?.isLastTallySyncSuccess ? theme.colors.green[9] : theme.colors.red[9]}
+                          withBorder
+                          bg={record?.isLastTallySyncSuccess ? theme.colors.green[1] : theme.colors.red[1]}
+                          className={`flex w-full items-center justify-center`}>
+                        <Text size={'xs'} fw={'bold'}>{record?.isLastTallySyncSuccess ? 'Success' : 'Failed'}</Text>
+                    </Card>
                 </div>
             )
         }
@@ -343,6 +360,7 @@ export default function CampaignDetails() {
                 withColumnBorders
                 records={filteredData}
                 fetching={isLoading}
+                pinFirstColumn
                 pinLastColumn
                 borderRadius={theme.radius.lg}
                 striped
