@@ -116,9 +116,12 @@ export default function Layout() {
                     />
                     <Group justify='space-between' style={{flex: 1}}>
                         <Group pos={'left'}>
-                            <Breadcrumbs separator="→" separatorMargin="xs" mt="xs">
-                                {breadcrumbs}
-                            </Breadcrumbs>
+                            {
+                                (theme.breakpoints.lg || theme.breakpoints.xl) &&
+                                <Breadcrumbs className={`!hidden lg:!flex xl:!flex`} separator="→" separatorMargin="xs" mt="xs">
+                                    {breadcrumbs}
+                                </Breadcrumbs>
+                            }
                         </Group>
                         <Group pos={'right'} gap={40}>
                             <Card py={5} px={10} withBorder className={`!flex !flex-row items-center justify-center gap-3`}>
@@ -148,7 +151,7 @@ export default function Layout() {
                         >
                             <div
                                 className="text-cente mb-4">
-                                <Title className={`!leading-8 gradientText`}>PMS</Title>
+                                <Title className={`!leading-8 gradientText`}>{utils.brandName}</Title>
                                 <p className={`gradientText !font-bold`}>Fee Recovery</p>
                             </div>
                         </Link>

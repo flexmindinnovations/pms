@@ -101,7 +101,7 @@ export default function Login() {
                     setTimeout(() => {
                         navigate('/');
                         setIsLoading(false);
-                    }, 1000);
+                    }, 500);
             }
         } catch (err) {
             console.error("Error:", err);
@@ -135,7 +135,7 @@ export default function Login() {
                         <Stack gap={0} align="center">
                             <div
                                 className="text-cente mb-4">
-                                <Title className={`!leading-7 gradientText`}>PMS</Title>
+                                <Title className={`!leading-7 gradientText`}>{utils.brandName}</Title>
                                 <p className={`gradientText !font-bold`}>Fee Recovery</p>
                             </div>
                             <Text className="text-center !text-white">Enter your credentials to continue</Text>

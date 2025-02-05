@@ -2,6 +2,7 @@ import {Home, Receipt, Users, Bell} from 'lucide-react';
 import {notifications} from "@mantine/notifications";
 
 export const utils = {
+    brandName: 'SHASHIB',
     showNotifications: (title, message, variant = 'success' | 'error', theme) => (
         notifications.show({
             title: title,

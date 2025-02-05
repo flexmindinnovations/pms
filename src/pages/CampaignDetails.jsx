@@ -15,13 +15,14 @@ import {useApiConfig} from "@context/ApiConfig.jsx";
 import {utils} from "../utils.js";
 import {ExternalLink, IndianRupee, Search} from 'lucide-react';
 import {useLocation, useNavigate, useParams} from "react-router-dom";
-import {DataTable} from "mantine-datatable";
 import dayjs from "dayjs";
 import utc from "dayjs/plugin/utc.js";
 import tz from "dayjs/plugin/timezone.js";
 import {useModal} from "@hooks/AddEditModal.jsx";
 import {RecoveryAgentDetails} from "@models/RecoveryAgentDetails.jsx";
 import {CreateUpdateStudent} from "@models/CreateUpdateStudent.jsx";
+import {DataTableWrapper} from "@components/DataTableWrapper.jsx";
+import {DataTable} from "mantine-datatable";
 
 dayjs.extend(utc);
 dayjs.extend(tz);
@@ -226,6 +227,8 @@ export default function CampaignDetails() {
         }
     ]
 
+    const columns = [...studentColumns, ...followUpColumns, ...moreDetailsColumns];
+
     const filteredData = useMemo(() => {
         const query = searchQuery.toLowerCase();
         if (!query) return dataSource?.items || [];
@@ -355,11 +358,13 @@ export default function CampaignDetails() {
                     style={{width: "100%"}}
                 />
             </div>
+
             <DataTable
                 withTableBorder
                 withColumnBorders
                 records={filteredData}
                 fetching={isLoading}
+                columns={columns}
                 pinFirstColumn
                 pinLastColumn
                 borderRadius={theme.radius.lg}
@@ -387,35 +392,8 @@ export default function CampaignDetails() {
                         padding: 0,
                     },
                 }}
-                groups={[
-                    {
-                        id: 'student',
-                        title: 'Student',
-                        textAlign: 'center',
-                        style: {
-                            backgroundColor: theme.white,
-                        },
-                        columns: studentColumns
-                    },
-                    {
-                        id: 'follow-up',
-                        title: 'Follow Up',
-                        textAlign: 'center',
-                        style: {
-                            backgroundColor: theme.white,
-                        },
-                        columns: followUpColumns
-                    },
-                    {
-                        id: 'details',
-                        textAlign: 'center',
-                        style: {
-                            backgroundColor: theme.white,
-                        },
-                        columns: moreDetailsColumns
-                    }
-                ]}
             />
+
         </Container>
     )
 }
