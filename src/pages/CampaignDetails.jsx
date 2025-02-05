@@ -109,9 +109,9 @@ export default function CampaignDetails() {
         {
             accessor: 'batch',
             title: 'Batch',
-            minWidth: 200,
+            minWidth: 100,
             ...utils.colPros,
-            width: 200,
+            width: 100,
             render: (record) => (
                 <p className={`px-4 py-2 text-base text-start`}>{record?.studentDto?.batch}</p>
             ),
