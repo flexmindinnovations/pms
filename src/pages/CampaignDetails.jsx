@@ -44,6 +44,7 @@ export default function CampaignDetails() {
     });
     const PAGE_SIZES = [10, 15, 20];
     const [searchQuery, setSearchQuery] = useState("");
+    const [query, setQuery] = useState('');
 
     const moreDetailsColumns = [
         {
@@ -58,6 +59,21 @@ export default function CampaignDetails() {
             render: (record) => (
                 <div className={`w-full h-full !bg-white z-10`}>
                     <p className={`px-4 !bg-white py-2 text-base text-start`}>{record?.status}</p>
+                </div>
+            ),
+        },
+        {
+            accessor: 'remarks',
+            title: 'Remark',
+            minWidth: 220,
+            ...utils.colPros,
+            width: 300,
+            titleStyle: {
+                backgroundColor: theme.white
+            },
+            render: (record) => (
+                <div className={`w-full h-full !bg-white z-10`}>
+                    <p className={`px-4 !bg-white py-2 text-base text-start`}>{record?.followUp?.remarks}</p>
                 </div>
             ),
         },
@@ -94,7 +110,23 @@ export default function CampaignDetails() {
                         {record?.studentDto?.name}
                     </Anchor>
                 </div>
-            )
+             )
+             //,filter: (
+            //     <TextInput
+            //       label="Name"
+            //       description="Show employees whose names include the specified text"
+            //       placeholder="Search Name..."
+            //     //   leftSection={<IconSearch size={16} />}
+            //       rightSection={
+            //         <ActionIcon size="sm" variant="transparent" c="dimmed" onClick={() => setQuery('')}>
+            //           {/* <IconX size={14} /> */}
+            //         </ActionIcon>
+            //       }
+            //       value={query}
+            //       onChange={(e) => setQuery(e.currentTarget.value)}
+            //     />
+            //   ),
+            //   filtering: query !== '',
         },
         {
             accessor: 'instituteName',
@@ -307,14 +339,18 @@ export default function CampaignDetails() {
             if (response.status === 200) {
                 const data = response.data;
                 const newDataSource = {
-                    items: data?.items.map((record) => {
+                    items: data?.items.map((record) =>  {
+                        if(record.outstandingAmount>=0)
+                        {
                         return {
                             ...record,
                             followUp: record.followups.reduce((latest, current) => {
                                 return dayjs(current.timestamp).isAfter(dayjs(latest.timestamp)) ? current : latest;
                             }, record.followups[0])
                         }
-                    })
+                    }
+                    return null;
+                    }).filter(Boolean)
                 }
                 setDataSource(newDataSource);
                 setPagination((prev) => ({
