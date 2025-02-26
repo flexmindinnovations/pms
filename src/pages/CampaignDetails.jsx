@@ -9,42 +9,50 @@ import {
     Tooltip,
     useMantineTheme
 } from "@mantine/core";
-import {useCallback, useEffect, useMemo, useState} from "react";
-import {useHttp} from "@hooks/AxiosInstance.js";
-import {useApiConfig} from "@context/ApiConfig.jsx";
-import {utils} from "../utils.js";
-import {ExternalLink, IndianRupee, Search} from 'lucide-react';
-import {useLocation, useNavigate, useParams} from "react-router-dom";
+import { useCallback, useEffect, useMemo, useState } from "react";
+import { useHttp } from "@hooks/AxiosInstance.js";
+import { useApiConfig } from "@context/ApiConfig.jsx";
+import { utils } from "../utils.js";
+import { ExternalLink, IndianRupee, Search, X } from 'lucide-react';
+import { useLocation, useNavigate, useParams } from "react-router-dom";
 import dayjs from "dayjs";
 import utc from "dayjs/plugin/utc.js";
 import tz from "dayjs/plugin/timezone.js";
-import {useModal} from "@hooks/AddEditModal.jsx";
-import {RecoveryAgentDetails} from "@models/RecoveryAgentDetails.jsx";
-import {CreateUpdateStudent} from "@models/CreateUpdateStudent.jsx";
-import {DataTableWrapper} from "@components/DataTableWrapper.jsx";
-import {DataTable} from "mantine-datatable";
+import { useModal } from "@hooks/AddEditModal.jsx";
+import { RecoveryAgentDetails } from "@models/RecoveryAgentDetails.jsx";
+import { CreateUpdateStudent } from "@models/CreateUpdateStudent.jsx";
+import { DataTable } from "mantine-datatable";
 
 dayjs.extend(utc);
 dayjs.extend(tz);
 
 export default function CampaignDetails() {
-    const {campaignId} = useParams();
+    const { campaignId } = useParams();
     const location = useLocation();
     const navigate = useNavigate();
     const [isLoading, setIsLoading] = useState(false);
     const [dataSource, setDataSource] = useState(null);
     const theme = useMantineTheme();
-    const {get, del} = useHttp();
+    const { get, del } = useHttp();
     const apiConfig = useApiConfig();
-    const {openModal} = useModal();
+    const { openModal } = useModal();
     const [pagination, setPagination] = useState({
         page: dataSource?.pageNumber || 1,
         pageSize: 15,
-        sortStatus: {columnAccessor: "", direction: ""},
+        sortStatus: { columnAccessor: "", direction: "" },
     });
     const PAGE_SIZES = [10, 15, 20];
     const [searchQuery, setSearchQuery] = useState("");
-    const [query, setQuery] = useState('');
+
+    const [filters, setFilters] = useState({
+        status: '',
+        outstandingAmount: '',
+        lastCaller: '',
+        name: '',
+        instituteName: '',
+        batch: '',
+        phone: ''
+    });
 
     const moreDetailsColumns = [
         {
@@ -61,6 +69,21 @@ export default function CampaignDetails() {
                     <p className={`px-4 !bg-white py-2 text-base text-start`}>{record?.status}</p>
                 </div>
             ),
+            filter: (
+                <TextInput
+                    label="Status"
+                    placeholder="Search status..."
+                    leftSection={<Search size={16} />}
+                    rightSection={
+                        <ActionIcon size="sm" variant="transparent" c="dimmed" onClick={() => handleFilterChange('status', '')}>
+                            <X size={14} />
+                        </ActionIcon>
+                    }
+                    value={filters.status}
+                    onChange={(e) => handleFilterChange('status', e.currentTarget.value)}
+                />
+            ),
+            filtering: filters.status !== '',
         },
         {
             accessor: 'remarks',
@@ -88,8 +111,8 @@ export default function CampaignDetails() {
             },
             render: (record) => (
                 <div className={`bg-white w-full flex items-center justify-center`}>
-                    <ActionIcon onClick={() => navigateToFollowUp(record)} size={"md"}>
-                        <ExternalLink size={14}/>
+                    <ActionIcon variant="transparent" onClick={() => navigateToFollowUp(record)}>
+                        <ExternalLink size={20} />
                     </ActionIcon>
                 </div>
             ),
@@ -110,23 +133,22 @@ export default function CampaignDetails() {
                         {record?.studentDto?.name}
                     </Anchor>
                 </div>
-             )
-             //,filter: (
-            //     <TextInput
-            //       label="Name"
-            //       description="Show employees whose names include the specified text"
-            //       placeholder="Search Name..."
-            //     //   leftSection={<IconSearch size={16} />}
-            //       rightSection={
-            //         <ActionIcon size="sm" variant="transparent" c="dimmed" onClick={() => setQuery('')}>
-            //           {/* <IconX size={14} /> */}
-            //         </ActionIcon>
-            //       }
-            //       value={query}
-            //       onChange={(e) => setQuery(e.currentTarget.value)}
-            //     />
-            //   ),
-            //   filtering: query !== '',
+            ),
+            filter: (
+                <TextInput
+                    label="Name"
+                    placeholder="Search name..."
+                    leftSection={<Search size={16} />}
+                    rightSection={
+                        <ActionIcon size="sm" variant="transparent" c="dimmed" onClick={() => handleFilterChange('name', '')}>
+                            <X size={14} />
+                        </ActionIcon>
+                    }
+                    value={filters.name}
+                    onChange={(e) => handleFilterChange('name', e.currentTarget.value)}
+                />
+            ),
+            filtering: filters.name !== '',
         },
         {
             accessor: 'instituteName',
@@ -137,6 +159,21 @@ export default function CampaignDetails() {
             render: (record) => (
                 <p className={`px-4 py-2 text-base text-start`}>{record?.studentDto?.instituteName}</p>
             ),
+            filter: (
+                <TextInput
+                    label="Institute"
+                    placeholder="Search institute..."
+                    leftSection={<Search size={16} />}
+                    rightSection={
+                        <ActionIcon size="sm" variant="transparent" c="dimmed" onClick={() => handleFilterChange('instituteName', '')}>
+                            <X size={14} />
+                        </ActionIcon>
+                    }
+                    value={filters.instituteName}
+                    onChange={(e) => handleFilterChange('instituteName', e.currentTarget.value)}
+                />
+            ),
+            filtering: filters.instituteName !== '',
         },
         {
             accessor: 'batch',
@@ -144,6 +181,21 @@ export default function CampaignDetails() {
             minWidth: 100,
             ...utils.colPros,
             width: 100,
+            filter: (
+                <TextInput
+                    label="Batch"
+                    placeholder="Search batch..."
+                    leftSection={<Search size={16} />}
+                    rightSection={
+                        <ActionIcon size="sm" variant="transparent" c="dimmed" onClick={() => handleFilterChange('batch', '')}>
+                            <X size={14} />
+                        </ActionIcon>
+                    }
+                    value={filters.batch}
+                    onChange={(e) => handleFilterChange('batch', e.currentTarget.value)}
+                />
+            ),
+            filtering: filters.batch !== '',
             render: (record) => (
                 <p className={`px-4 py-2 text-base text-start`}>{record?.studentDto?.batch}</p>
             ),
@@ -153,6 +205,21 @@ export default function CampaignDetails() {
             title: 'Phone',
             minWidth: 120,
             ...utils.colPros,
+            filter: (
+                <TextInput
+                    label="Phone"
+                    placeholder="Search Phone..."
+                    leftSection={<Search size={16} />}
+                    rightSection={
+                        <ActionIcon size="sm" variant="transparent" c="dimmed" onClick={() => handleFilterChange('phone', '')}>
+                            <X size={14} />
+                        </ActionIcon>
+                    }
+                    value={filters.phone}
+                    onChange={(e) => handleFilterChange('phone', e.currentTarget.value)}
+                />
+            ),
+            filtering: filters.phone !== '',
             render: (record) => (
                 <p className={`px-4 py-2 text-base text-start`}>{record?.studentDto?.phone}</p>
             ),
@@ -168,20 +235,35 @@ export default function CampaignDetails() {
                 <div className={`w-full text-left px-4 py-2`}>
                     {
                         record?.outstandingAmount ? (
-                                <Text className={`flex items-center`}><IndianRupee size={14}/>{record?.outstandingAmount}
-                                </Text>
-                            ) :
+                            <Text className={`flex items-center`}><IndianRupee size={14} />{record?.outstandingAmount}
+                            </Text>
+                        ) :
                             <Text>NA</Text>
                     }
                 </div>
-            )
+            ),
+            filter: (
+                <TextInput
+                    label="Balances"
+                    placeholder="Search balances..."
+                    leftSection={<Search size={16} />}
+                    rightSection={
+                        <ActionIcon size="sm" variant="transparent" c="dimmed" onClick={() => handleFilterChange('outstandingAmount', '')}>
+                            <X size={14} />
+                        </ActionIcon>
+                    }
+                    value={filters.outstandingAmount}
+                    onChange={(e) => handleFilterChange('outstandingAmount', e.currentTarget.value)}
+                />
+            ),
+            filtering: filters.outstandingAmount !== ''
         },
         {
             accessor: 'timestamp',
             title: 'Last Followup',
             minWidth: 150,
             ...utils.colPros,
-            render: ({followUp}) => (
+            render: ({ followUp }) => (
                 <div className={`w-full text-left px-4 py-2`}>
                     <Text>{dayjs.utc(followUp?.timestamp).tz('Asia/Kolkata').format('MMMM D, YYYY h:mm A')}</Text>
                 </div>
@@ -203,10 +285,25 @@ export default function CampaignDetails() {
             title: 'Last Caller',
             minWidth: 80,
             ...utils.colPros,
+            filter: (
+                <TextInput
+                    label="Last Caller"
+                    placeholder="Search last caller..."
+                    leftSection={<Search size={16} />}
+                    rightSection={
+                        <ActionIcon size="sm" variant="transparent" c="dimmed" onClick={() => handleFilterChange('lastCaller', '')}>
+                            <X size={14} />
+                        </ActionIcon>
+                    }
+                    value={filters.lastCaller}
+                    onChange={(e) => handleFilterChange('lastCaller', e.currentTarget.value)}
+                />
+            ),
+            filtering: filters.lastCaller !== '',
             render: (record) => (
                 <div className={`w-full text-left px-4 py-2`}>
                     <Anchor c={theme.colors.blue[6]} size={'md'}
-                            onClick={() => handleLinkClick(record, 'recoveryAgent')}>
+                        onClick={() => handleLinkClick(record, 'recoveryAgent')}>
                         {record?.followUp?.recoveryAgentDto?.name}
                     </Anchor>
                 </div>
@@ -228,13 +325,13 @@ export default function CampaignDetails() {
             title: 'Commitment Amount',
             minWidth: 80,
             ...utils.colPros,
-            render: ({followUp}) => (
+            render: ({ followUp }) => (
                 <div className={`w-full text-left px-4 py-2`}>
                     {
                         followUp?.committmentAmount ? (
-                                <Text className={`flex items-center`}><IndianRupee size={14}/>{followUp?.committmentAmount}
-                                </Text>
-                            ) :
+                            <Text className={`flex items-center`}><IndianRupee size={14} />{followUp?.committmentAmount}
+                            </Text>
+                        ) :
                             <Text>NA</Text>
                     }
                 </div>
@@ -249,9 +346,9 @@ export default function CampaignDetails() {
             render: (record) => (
                 <div className={`px-4`}>
                     <Card p={2} py={4} c={record?.isLastTallySyncSuccess ? theme.colors.green[9] : theme.colors.red[9]}
-                          withBorder
-                          bg={record?.isLastTallySyncSuccess ? theme.colors.green[1] : theme.colors.red[1]}
-                          className={`flex w-full items-center justify-center`}>
+                        withBorder
+                        bg={record?.isLastTallySyncSuccess ? theme.colors.green[1] : theme.colors.red[1]}
+                        className={`flex w-full items-center justify-center`}>
                         <Text size={'xs'} fw={'bold'}>{record?.isLastTallySyncSuccess ? 'Success' : 'Failed'}</Text>
                     </Card>
                 </div>
@@ -261,51 +358,145 @@ export default function CampaignDetails() {
 
     const columns = [...studentColumns, ...followUpColumns, ...moreDetailsColumns];
 
+
+    const handleFilterChange = (column, value) => {
+        setSearchQuery('');
+        setFilters(prev => ({
+            ...prev,
+            [column]: value
+        }));
+    };
+
     const filteredData = useMemo(() => {
         const query = searchQuery.toLowerCase();
-        if (!query) return dataSource?.items || [];
-        return dataSource?.items?.filter((record) => {
-            return (
-                Object.values(record).some((value) =>
-                    typeof value === "string" && value.toLowerCase().includes(query)
-                ) ||
-                Object.values(record.studentDto || {}).some((value) =>
-                    typeof value === "string" && value.toLowerCase().includes(query)
-                )
-            );
-        }) || [];
-    }, [searchQuery, dataSource]);
+        if (!dataSource?.items) return [];
+        return dataSource?.items.filter((record) => {
+            if (query) {
+                return (
+                    Object.values(record).some((value) =>
+                        typeof value === "string" && value.toLowerCase().includes(query)
+                    ) ||
+                    Object.values(record.studentDto || {}).some((value) =>
+                        typeof value === "string" && value.toLowerCase().includes(query)
+                    )
+                );
+            }
+            if (!query) {
+                return columns.every((col) => {
+
+                    if (searchQuery) {
+                        if (col.accessor === 'outstandingAmount') {
+                            return record?.outstandingAmount?.toString()?.includes(searchQuery);
+                        }
+
+                        if (col.accessor === 'status' && record?.status) {
+                            return record.status.toLowerCase().includes(searchQuery.toLowerCase());
+                        }
+
+                        if (col.accessor === 'lastCaller' && record?.followUp?.recoveryAgentDto?.name) {
+                            return record.followUp.recoveryAgentDto.name.toLowerCase().includes(searchQuery.toLowerCase());
+                        }
+
+                        if (col.accessor === 'name' && record?.studentDto?.name) {
+                            return record.studentDto.name.toLowerCase().includes(searchQuery.toLowerCase());
+                        }
+
+                        if (col.accessor === 'instituteName' && record?.studentDto?.instituteName) {
+                            return record.studentDto.instituteName.toLowerCase().includes(searchQuery.toLowerCase());
+                        }
+
+                        if (col.accessor === 'batch' && record?.studentDto?.batch) {
+                            return record.studentDto.batch.toLowerCase().includes(searchQuery.toLowerCase());
+                        }
+
+                        if (col.accessor === 'phone' && record?.studentDto?.phone) {
+                            return record.studentDto.phone.toLowerCase().includes(searchQuery.toLowerCase());
+                        }
+
+                        return true;
+                    }
+
+                    if (filters[col.accessor]) {
+                        if (col.accessor === 'status' && record?.status) {
+                            return record.status.toLowerCase().includes(filters.status.toLowerCase());
+                        }
+
+                        if (col.accessor === 'outstandingAmount' && record?.outstandingAmount) {
+                            const balance = record.outstandingAmount;
+
+                            if (balance === "NA") {
+                                return false;
+                            }
+
+                            const numericBalance = parseFloat(balance);
+                            if (!isNaN(numericBalance)) {
+                                return numericBalance.toString().includes(filters.outstandingAmount);
+                            }
+                            return true;
+                        }
+
+                        if (col.accessor === 'lastCaller' && record?.followUp?.recoveryAgentDto?.name) {
+                            return record.followUp.recoveryAgentDto.name.toLowerCase().includes(filters.lastCaller.toLowerCase());
+                        }
+
+                        if (col.accessor === 'name' && record?.studentDto?.name) {
+                            return record.studentDto.name.toLowerCase().includes(filters.name.toLowerCase());
+                        }
+
+                        if (col.accessor === 'instituteName' && record?.studentDto?.instituteName) {
+                            return record.studentDto.instituteName.toLowerCase().includes(filters.instituteName.toLowerCase());
+                        }
+
+                        if (col.accessor === 'batch' && record?.studentDto?.batch) {
+                            return record.studentDto.batch.toLowerCase().includes(filters.batch.toLowerCase());
+                        }
+
+                        if (col.accessor === 'phone' && record?.studentDto?.phone) {
+                            return record.studentDto.phone.toLowerCase().includes(filters.phone.toLowerCase());
+                        }
+
+                        return true;
+                    }
+
+                    return true;
+                });
+            }
+            return false;
+        });
+    }, [dataSource, filters, searchQuery, columns]);
+
+
     const handleSortChange = useCallback((sortStatus) => {
-        setPagination((prev) => ({...prev, sortStatus}));
+        setPagination((prev) => ({ ...prev, sortStatus }));
     }, []);
 
     const handlePageChange = (page) => {
-        setPagination((prev) => ({...prev, page}));
-        fetchData({page, pageSize: pagination.pageSize});
+        setPagination((prev) => ({ ...prev, page }));
+        fetchData({ page, pageSize: pagination.pageSize });
     };
 
     const handlePageSizeChange = (pageSize) => {
-        setPagination({...pagination, pageSize, page: 1});
-        fetchData({page: 1, pageSize});
+        setPagination({ ...pagination, pageSize, page: 1 });
+        fetchData({ page: 1, pageSize });
     };
 
-    const fetchData = ({page, pageSize}) => {
+    const fetchData = ({ page, pageSize }) => {
         getCampaignDetails(page, pageSize).then();
     };
 
     const navigateToFollowUp = (record) => {
-        navigate(`/campaign-details/${campaignId}/follow-up`, {state: record});
+        navigate(`/campaign-details/${campaignId}/follow-up`, { state: record });
     }
 
     const handleLinkClick = (record, user) => {
         switch (user) {
             case 'recoveryAgent': {
-                const {recoveryAgentDto} = record.followUp;
+                const { recoveryAgentDto } = record.followUp;
                 openDetailsModel(recoveryAgentDto, RecoveryAgentDetails, 'Recovery Agent', 'view')
                 break;
             }
             case 'student': {
-                const {studentDto} = record;
+                const { studentDto } = record;
                 openDetailsModel(studentDto, CreateUpdateStudent, 'Update Student Details', 'edit');
                 break;
             }
@@ -339,17 +530,16 @@ export default function CampaignDetails() {
             if (response.status === 200) {
                 const data = response.data;
                 const newDataSource = {
-                    items: data?.items.map((record) =>  {
-                        if(record.outstandingAmount>=0)
-                        {
-                        return {
-                            ...record,
-                            followUp: record.followups.reduce((latest, current) => {
-                                return dayjs(current.timestamp).isAfter(dayjs(latest.timestamp)) ? current : latest;
-                            }, record.followups[0])
+                    items: data?.items.map((record) => {
+                        if (record.outstandingAmount >= 0) {
+                            return {
+                                ...record,
+                                followUp: record.followups.reduce((latest, current) => {
+                                    return dayjs(current.timestamp).isAfter(dayjs(latest.timestamp)) ? current : latest;
+                                }, record.followups[0])
+                            }
                         }
-                    }
-                    return null;
+                        return null;
                     }).filter(Boolean)
                 }
                 setDataSource(newDataSource);
@@ -366,7 +556,7 @@ export default function CampaignDetails() {
                 )
             }
         } catch (err) {
-            const {message} = err;
+            const { message } = err;
             utils.showNotifications('Error', message, 'error', theme);
         } finally {
             setIsLoading(false);
@@ -375,15 +565,15 @@ export default function CampaignDetails() {
 
     return (
         <Container size={'xl'} p={0} fluid>
-            <div className={`mb-4`} style={{position: "relative", width: "50%"}}>
+            <div className={`mb-4`} style={{ position: "relative", width: "50%" }}>
                 <TextInput
                     type="text"
-                    leftSection={<Search size={16}/>}
+                    leftSection={<Search size={16} />}
                     disabled={isLoading || !dataSource?.items?.length}
                     rightSection={
                         searchQuery && (
                             <Tooltip label="Clear Search">
-                                <CloseButton onClick={() => setSearchQuery("")}/>
+                                <CloseButton onClick={() => setSearchQuery("")} />
                             </Tooltip>
                         )
                     }
@@ -391,7 +581,7 @@ export default function CampaignDetails() {
                     placeholder="Search"
                     value={searchQuery}
                     onChange={(e) => setSearchQuery(e.target.value)}
-                    style={{width: "100%"}}
+                    style={{ width: "100%" }}
                 />
             </div>
 
@@ -414,7 +604,7 @@ export default function CampaignDetails() {
                 sortStatus={pagination.sortStatus}
                 onSortStatusChange={handleSortChange}
                 paginationSize="md"
-                paginationText={({from, to, totalRecords}) =>
+                paginationText={({ from, to, totalRecords }) =>
                     `Records ${from} - ${to} of ${totalRecords}`
                 }
                 paginationWrapBreakpoint="sm"
