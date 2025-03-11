@@ -42,7 +42,7 @@ export default function Students() {
             ...utils.colPros,
             render: (record) => (
                 <div className={`w-full text-left px-4`}>
-                    <Text className={`px-4 text-start`}>{record.name}</Text>
+                    <Text size="sm" className={`px-4 text-start`}>{record.name}</Text>
                 </div>
             ),
             filter: (
@@ -67,7 +67,7 @@ export default function Students() {
             minWidth: 200,
             ...utils.colPros,
             render: (record) => (
-                <p className={`px-4 text-start`}>{record.instituteName}</p>
+                <Text px={10} size="sm" className={`px-4 text-start`}>{record.instituteName}</Text>
             ),
             filter: (
                 <TextInput
@@ -91,7 +91,7 @@ export default function Students() {
             minWidth: 100,
             ...utils.colPros,
             render: (record) => (
-                <p className={`px-4 text-start`}>{record.batch}</p>
+                <Text px={10} size="sm" className={`px-4 text-start`}>{record.batch}</Text>
             ),
             filter: (
                 <TextInput
@@ -115,7 +115,7 @@ export default function Students() {
             minWidth: 120,
             ...utils.colPros,
             render: (record) => (
-                <p className={`px-4 text-start`}>{record.phone}</p>
+                <Text px={10} size="sm" className={`px-4 text-start`}>{record.phone}</Text>
             ),
             filter: (
                 <TextInput
@@ -139,7 +139,7 @@ export default function Students() {
             minWidth: 140,
             ...utils.colPros,
             render: (record) => (
-                <p className={`px-4 text-start`}>{record.gaurdianPhone}</p>
+                <Text px={10} size="sm" className={`px-4 text-start`}>{record.gaurdianPhone}</Text>
             ),
             filter: (
                 <TextInput
@@ -163,7 +163,7 @@ export default function Students() {
             minWidth: 200,
             ...utils.colPros,
             render: (record) => (
-                <p className={`px-4 text-start`}>{record.email}</p>
+                <Text px={10} size="sm" className={`px-4 text-start`}>{record.email}</Text>
             ),
             filter: (
                 <TextInput
@@ -187,7 +187,7 @@ export default function Students() {
             minWidth: 200,
             ...utils.colPros,
             render: (record) => (
-                <p className={`px-4 text-start`}>{record.gaurdianEmail}</p>
+                <Text px={10} size="sm" className={`px-4 text-start`}>{record.gaurdianEmail}</Text>
             ),
             filter: (
                 <TextInput
