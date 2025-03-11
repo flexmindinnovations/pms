@@ -22,7 +22,7 @@ export const utils = {
     ),
     pageConfig: Object.freeze({
         pageNumber: '1',
-        pageSize: '15',
+        pageSize: '-1',
     }),
     colPros: {
         noWrap: true,
@@ -58,6 +58,7 @@ export const utils = {
         },
     },
     truncateText: (text, maxLength) => {
+        if(!text) return '';
         if (text.length <= maxLength) {
             return text;
         }

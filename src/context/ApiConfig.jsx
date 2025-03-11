@@ -3,7 +3,7 @@ import {utils} from "../utils.js";
 
 const endpoint = `https://test.feerecovery.shashibgroup.in/aws/Api`;
 const defaultPageNumber = typeof utils.pageConfig.pageNumber === 'object' ? 1 : utils.pageConfig.pageNumber;
-const defaultPageSize = typeof utils.pageConfig.pageSize === 'object' ? 15 : utils.pageConfig.pageSize;
+const defaultPageSize = typeof utils.pageConfig.pageSize === 'object' ? -1 : utils.pageConfig.pageSize;
 const contextConfig = {
     login: `https://test.pms.shashibgroup.in/aws/api/Authentication`,
     students: {

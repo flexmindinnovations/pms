@@ -88,15 +88,19 @@ export default function CampaignDetails() {
         {
             accessor: 'remarks',
             title: 'Remark',
-            minWidth: 220,
+            minWidth: 200,
             ...utils.colPros,
-            width: 300,
+            width: 200,
             titleStyle: {
                 backgroundColor: theme.white
             },
             render: (record) => (
                 <div className={`w-full h-full !bg-white z-10`}>
-                    <p className={`px-4 !bg-white py-2 text-base text-start`}>{record?.followUp?.remarks}</p>
+                    <Tooltip label={record?.followUp?.remarks}>
+                        <Text px={10} className={`px-4 !bg-white py-2 text-base text-start`}>
+                            {utils.truncateText(record?.followUp?.remarks, 20)}
+                        </Text>
+                    </Tooltip>
                 </div>
             ),
         },
@@ -124,14 +128,17 @@ export default function CampaignDetails() {
             title: 'Name',
             minWidth: 150,
             ...utils.colPros,
+            resize: true,
             titleStyle: {
                 backgroundColor: theme.white
             },
             render: (record) => (
                 <div className={`w-full text-left px-4 py-2 bg-white`}>
-                    <Anchor c={theme.colors.blue[6]} size={'md'} onClick={() => handleLinkClick(record, 'student')}>
-                        {record?.studentDto?.name}
-                    </Anchor>
+                    <Tooltip label={record?.studentDto?.name}>
+                        <Anchor c={theme.colors.blue[6]} size={'md'} onClick={() => handleLinkClick(record, 'student')}>
+                            {utils.truncateText(record?.studentDto?.name, 20)}
+                        </Anchor>
+                    </Tooltip>
                 </div>
             ),
             filter: (
@@ -153,11 +160,14 @@ export default function CampaignDetails() {
         {
             accessor: 'instituteName',
             title: 'Institute',
-            minWidth: 220,
+            minWidth: 200,
             ...utils.colPros,
-            width: 220,
+            resize: true,
+            width: 200,
             render: (record) => (
-                <p className={`px-4 py-2 text-base text-start`}>{record?.studentDto?.instituteName}</p>
+                <Tooltip label={record?.studentDto?.instituteName}>
+                    <Text px={10} className={`px-4 py-2 text-base text-start`}>{utils.truncateText(record?.studentDto?.instituteName, 20)}</Text>
+                </Tooltip>
             ),
             filter: (
                 <TextInput
@@ -197,7 +207,7 @@ export default function CampaignDetails() {
             ),
             filtering: filters.batch !== '',
             render: (record) => (
-                <p className={`px-4 py-2 text-base text-start`}>{record?.studentDto?.batch}</p>
+                <p className={`px-4 py-2 text-base text-start !bg-white`}>{record?.studentDto?.batch}</p>
             ),
         },
         {
@@ -511,6 +521,7 @@ export default function CampaignDetails() {
             withCloseButton: true,
             size: mode === 'edit' ? 'lg' : 'md',
             title,
+            mode,
             isView: mode !== 'edit',
             handleRefresh: () => {
             }
@@ -531,15 +542,15 @@ export default function CampaignDetails() {
                 const data = response.data;
                 const newDataSource = {
                     items: data?.items.map((record) => {
-                        if (record.outstandingAmount >= 0) {
+                        // if (record.outstandingAmount >= 0) {
                             return {
                                 ...record,
                                 followUp: record.followups.reduce((latest, current) => {
                                     return dayjs(current.timestamp).isAfter(dayjs(latest.timestamp)) ? current : latest;
                                 }, record.followups[0])
                             }
-                        }
-                        return null;
+                        // }
+                        // return null;
                     }).filter(Boolean)
                 }
                 setDataSource(newDataSource);

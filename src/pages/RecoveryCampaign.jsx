@@ -115,7 +115,7 @@ export default function RecoveryCampaign() {
 
     const getRecoveryCampaignList = useCallback(async (
         pageNumber = utils.pageConfig.pageNumber,
-        pageSize = utils.pageConfig.pageSize) => {
+        pageSize = 15) => {
         setIsLoading(true);
         try {
             const response = await get(apiConfig.recoveryCampaign.list(pageNumber, pageSize));

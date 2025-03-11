@@ -11,23 +11,23 @@ import {
     Title,
     useMantineTheme
 } from "@mantine/core";
-import {motion} from 'motion/react';
-import {useEffect, useState} from "react";
-import {useForm} from "@mantine/form";
-import {useHttp} from "@hooks/AxiosInstance.js";
-import {useApiConfig} from "@context/ApiConfig.jsx";
-import {utils} from "../utils.js";
-import {useNavigate} from "react-router-dom";
-import {useEncrypt} from "@hooks/EncryptData.js";
+import { motion } from 'motion/react';
+import { useEffect, useState } from "react";
+import { useForm } from "@mantine/form";
+import { useHttp } from "@hooks/AxiosInstance.js";
+import { useApiConfig } from "@context/ApiConfig.jsx";
+import { utils } from "../utils.js";
+import { useNavigate } from "react-router-dom";
+import { useEncrypt } from "@hooks/EncryptData.js";
 
 export default function Login() {
     const [cardKey, setCardKey] = useState('');
     const [isLoading, setIsLoading] = useState(false);
-    const {post} = useHttp();
+    const { post } = useHttp();
     const apiConfig = useApiConfig();
     const theme = useMantineTheme();
     const navigate = useNavigate();
-    const {setEncryptedData} = useEncrypt();
+    const { setEncryptedData } = useEncrypt();
     const form = useForm({
         initialValues: {
             loginName: "",
@@ -60,25 +60,26 @@ export default function Login() {
             loginName: 'LOKESHYADAV704@GMAIL.COM',
             password: 'exec@2019$',
         }
-        form.setValues(formValue);
+        // form.setValues(formValue);
     }
 
     const handleFormSubmit = async (values) => {
         setIsLoading(true);
         try {
-            const response = await loginUser({...values});
+            const response = await loginUser({ ...values });
             if (response.status === 200) {
                 const data = response.data;
-                const {authenticationToken, userID, message, userName, emailID} = data;
+                const { authenticationToken, userID, message, userName, emailID } = data;
                 if (authenticationToken) {
                     sessionStorage.setItem("token", authenticationToken);
                     setEncryptedData("userID", userID);
                     setEncryptedData("user", userName);
+                    setEncryptedData("e", emailID);
                     utils.showNotifications(message,
                         <p>{'Successfully logged in!'}</p>,
                         'success',
                         theme);
-                    createAgent({name: userName, email: emailID, contact: data?.contact}).then();
+                    createAgent({ name: userName, email: emailID, contact: data?.contact }).then();
                 }
             }
         } catch (err) {
@@ -87,21 +88,19 @@ export default function Login() {
                 <p className={`text-white`}>{'Error while logging in!'}</p>,
                 'error',
                 theme);
-        } finally {
-            setIsLoading(false);
         }
     }
 
-    const createAgent = async ({name, email, contact = null}) => {
+    const createAgent = async ({ name, email, contact = null }) => {
         setIsLoading(true);
-        const payload = {name, email, contact};
+        const payload = { name, email, contact };
         try {
             const response = await post(apiConfig.recoveryAgent.create, payload);
             if (response.status === 200) {
-                    setTimeout(() => {
-                        navigate('/');
-                        setIsLoading(false);
-                    }, 500);
+                setTimeout(() => {
+                    navigate('/');
+                    setIsLoading(false);
+                }, 500);
             }
         } catch (err) {
             console.error("Error:", err);
@@ -110,6 +109,8 @@ export default function Login() {
                 'error',
                 theme);
             setIsLoading(false);
+        } finally {
+            setIsLoading(false);
         }
     }
 
@@ -117,19 +118,19 @@ export default function Login() {
         <Container fluid className="polka h-screen flex items-center justify-center p-4">
             <motion.div
                 key={cardKey}
-                transition={{delay: 0.3, duration: 0.3}}
-                initial={{opacity: 0, y: -20}}
-                animate={{opacity: 1, y: 0}}
-                exit={{opacity: 0, y: -20}}
+                transition={{ delay: 0.3, duration: 0.3 }}
+                initial={{ opacity: 0, y: -20 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: -20 }}
                 className="w-full max-w-md"
             >
                 <Card p={20}
-                      styles={{
-                          root: {
-                              maxWidth: (theme.breakpoints.xs || theme.breakpoints.sm) ? '100%' : '40%',
-                              backgroundColor: "var(--polka)"
-                          }
-                      }}
+                    styles={{
+                        root: {
+                            maxWidth: (theme.breakpoints.xs || theme.breakpoints.sm) ? '100%' : '40%',
+                            backgroundColor: "var(--polka)"
+                        }
+                    }}
                 >
                     <Center>
                         <Stack gap={0} align="center">

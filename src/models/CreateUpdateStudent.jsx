@@ -16,7 +16,7 @@ export function CreateUpdateStudent({data = {}, mode = 'add', handleCancel, onAd
         "gaurdianEmail": "alice.gaurdian@example.com"
     };
 
-    const formData = data || dummyData;
+    const formData = data;
     const [disableForm, setDisableForm] = useState(false);
     const form = useForm({
         initialValues: {

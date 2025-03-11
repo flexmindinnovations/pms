@@ -56,7 +56,7 @@ export default function RecoveryAgent() {
 
     const getRecoveryAgentList = useCallback(async (
         pageNumber = utils.pageConfig.pageNumber,
-        pageSize = utils.pageConfig.pageSize) => {
+        pageSize = 15) => {
         setIsLoading(true);
         try {
             const response = await get(apiConfig.recoveryAgent.list(pageNumber, pageSize));
