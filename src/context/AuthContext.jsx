@@ -1,41 +1,57 @@
-import {createContext, useContext, useEffect, useState} from "react";
-import {useNavigate} from "react-router-dom";
+import { createContext, useContext, useEffect, useState } from "react";
+import { useNavigate, useLocation } from "react-router-dom";
 
-const authConfig = {
+const AuthContext = createContext({
     isLoggedIn: false,
     getToken: () => '',
     userDetails: {},
-    logout() {}
-};
+    logout: () => {}
+});
 
-const AuthContext = createContext(authConfig);
-
-export function AuthProvider({children}) {
-    const [isLoggedIn, setIsLoggedIn] = useState(false);
+export function AuthProvider({ children }) {
+    const [isLoggedIn, setIsLoggedIn] = useState(!!sessionStorage.getItem("token"));
     const [userDetails, setUserDetails] = useState({});
     const navigate = useNavigate();
+    const location = useLocation();
 
     const isAuthenticated = () => !!sessionStorage.getItem("token");
     const getToken = () => sessionStorage.getItem("token");
 
     const logout = () => {
-        sessionStorage.removeItem("token");
-        sessionStorage.removeItem("userID");
         sessionStorage.clear();
         setIsLoggedIn(false);
         navigate("/login");
+        window.history.replaceState(null, "", "/login");
     };
 
     useEffect(() => {
         if (isAuthenticated()) {
             setIsLoggedIn(true);
+            if (location.pathname === "/login") {
+                navigate("/");
+            }
         } else {
             navigate("/login");
         }
-    }, []);
+    }, [location.pathname]);
+
+    useEffect(() => {
+        const handleBackButton = () => {
+            if (!isAuthenticated()) {
+                navigate("/login");
+                window.history.replaceState(null, "", "/login");
+            } else if (location.pathname === "/login") {
+                navigate("/");
+            }
+        };
+        window.addEventListener("popstate", handleBackButton);
+        return () => {
+            window.removeEventListener("popstate", handleBackButton);
+        };
+    }, [location.pathname]);
 
     return (
-        <AuthContext.Provider value={{isLoggedIn, getToken, userDetails, logout}}>
+        <AuthContext.Provider value={{ isLoggedIn, getToken, userDetails, logout }}>
             {children}
         </AuthContext.Provider>
     );
