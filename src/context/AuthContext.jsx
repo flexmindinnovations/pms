@@ -1,57 +1,57 @@
-import { createContext, useContext, useEffect, useState } from "react";
+import { createContext, useContext, useEffect, useState, useCallback } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
 
 const AuthContext = createContext({
     isLoggedIn: false,
-    getToken: () => '',
+    getToken: () => "",
     userDetails: {},
-    logout: () => {}
+    logout: () => {},
 });
 
+const getTokenFromSessionStorage = () => sessionStorage.getItem("token");
+
 export function AuthProvider({ children }) {
-    const [isLoggedIn, setIsLoggedIn] = useState(!!sessionStorage.getItem("token"));
+    const [isLoggedIn, setIsLoggedIn] = useState(() => !!getTokenFromSessionStorage());
     const [userDetails, setUserDetails] = useState({});
     const navigate = useNavigate();
     const location = useLocation();
 
-    const isAuthenticated = () => !!sessionStorage.getItem("token");
-    const getToken = () => sessionStorage.getItem("token");
-
-    const logout = () => {
+    const logout = useCallback(() => {
         sessionStorage.clear();
         setIsLoggedIn(false);
         navigate("/login");
         window.history.replaceState(null, "", "/login");
-    };
+    }, [navigate]);
 
     useEffect(() => {
-        if (isAuthenticated()) {
-            setIsLoggedIn(true);
-            if (location.pathname === "/login") {
-                navigate("/");
-            }
-        } else {
+        if (isLoggedIn && location.pathname === "/login") {
+            navigate("/");
+        } else if (!isLoggedIn && location.pathname !== "/login") {
             navigate("/login");
         }
-    }, [location.pathname]);
+    }, [isLoggedIn, location.pathname, navigate]);
 
     useEffect(() => {
         const handleBackButton = () => {
-            if (!isAuthenticated()) {
+            if (!isLoggedIn) {
                 navigate("/login");
                 window.history.replaceState(null, "", "/login");
-            } else if (location.pathname === "/login") {
-                navigate("/");
             }
         };
         window.addEventListener("popstate", handleBackButton);
         return () => {
             window.removeEventListener("popstate", handleBackButton);
         };
-    }, [location.pathname]);
+    }, [isLoggedIn, navigate]);
+    
+    useEffect(() => {
+        setIsLoggedIn(!!getTokenFromSessionStorage());
+    }, [getTokenFromSessionStorage()])
 
     return (
-        <AuthContext.Provider value={{ isLoggedIn, getToken, userDetails, logout }}>
+        <AuthContext.Provider
+            value={{ isLoggedIn, getToken: getTokenFromSessionStorage, userDetails, logout }}
+        >
             {children}
         </AuthContext.Provider>
     );
