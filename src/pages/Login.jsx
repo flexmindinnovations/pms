@@ -52,7 +52,7 @@ export default function Login() {
     useEffect(() => {
         const key = Math.random().toString(36).substring(2);
         setCardKey(key);
-        setTestFormValues();
+        // setTestFormValues();
     }, []);
 
     const setTestFormValues = () => {
@@ -60,7 +60,7 @@ export default function Login() {
             loginName: 'LOKESHYADAV704@GMAIL.COM',
             password: 'exec@2019$',
         }
-        // form.setValues(formValue);
+        form.setValues(formValue);
     }
 
     const handleFormSubmit = async (values) => {
