@@ -38,7 +38,7 @@ export function DataTableWrapper({
                                      canEdit = true,
                                      canDelete = true,
                                      showRefreshButton = true,
-    onPageChange,
+                                     onPageChange,
                                  }) {
     const [pagination, setPagination] = useState({
         page: dataSource?.pageNumber || 1,
@@ -57,12 +57,18 @@ export function DataTableWrapper({
 
     const filteredData = useMemo(() => {
         const query = searchQuery.toLowerCase();
-        return dataSource?.items?.filter((record) =>
+
+        const allFilteredData = dataSource?.items?.filter((record) =>
             Object.values(record).some((value) =>
                 String(value || "").toLowerCase().includes(query)
             )
         ) || [];
-    }, [searchQuery, dataSource]);
+
+        return allFilteredData.slice(
+            (pagination.page - 1) * pagination.pageSize,
+            pagination.page * pagination.pageSize
+        );
+    }, [searchQuery, dataSource, pagination.page, pagination.pageSize]);
 
     useEffect(() => {
         if (!dataSource) return;
@@ -73,11 +79,7 @@ export function DataTableWrapper({
             hasPreviousPage: !!dataSource.hasPreviousPage,
             hasNextPage: !!dataSource.hasNextPage,
         }));
-        filteredData.slice(
-            (pagination.page - 1) * pagination.pageSize,
-            pagination.page * pagination.pageSize
-        )
-    }, [dataSource]);
+    }, [dataSource, pagination.pageSize]);
 
     const handleSortChange = useCallback((sortStatus) => {
         setPagination((prev) => ({...prev, sortStatus}));
@@ -134,12 +136,12 @@ export function DataTableWrapper({
 
     const handlePageChange = (page) => {
         setPagination((prev) => ({...prev, page}));
-        fetchData({page, pageSize: pagination.pageSize});
+        // fetchData({page, pageSize: pagination.pageSize});
     };
 
     const handlePageSizeChange = (pageSize) => {
         setPagination({...pagination, pageSize, page: 1});
-        fetchData({page: 1, pageSize});
+        // fetchData({page: 1, pageSize});
     };
 
     const fetchData = ({page, pageSize}) => {
@@ -229,9 +231,10 @@ export function DataTableWrapper({
                 sortStatus={pagination.sortStatus}
                 onSortStatusChange={handleSortChange}
                 paginationSize="md"
-                paginationText={({from, to, totalRecords}) =>
-                    `Records ${from} - ${to} of ${totalRecords}`
-                }
+                paginationText={({from, to, totalRecords}) => {
+                    const correctedTo = Math.min(to, totalRecords);
+                    return `Records ${from} - ${correctedTo} of ${totalRecords}`;
+                }}
                 paginationWrapBreakpoint="sm"
                 styles={{
                     root: {
