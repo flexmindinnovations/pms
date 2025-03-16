@@ -18,11 +18,13 @@ export function CreateUpdateStudent({data = {}, mode = 'add', handleCancel, onAd
 
     const formData = data;
     const [disableForm, setDisableForm] = useState(false);
+    const instituteName = sessionStorage.getItem('instituteName') || '';
+    const batchName = sessionStorage.getItem('batch') || '';
     const form = useForm({
         initialValues: {
             name: formData?.name || '',
-            instituteName: formData?.instituteName || '',
-            batch: formData?.batch || '',
+            instituteName: formData?.instituteName || instituteName || '',
+            batch: formData?.batch || batchName || '',
             phone: formData?.phone || '',
             gaurdianPhone: formData?.gaurdianPhone || '',
             email: formData?.email || '',
@@ -32,6 +34,11 @@ export function CreateUpdateStudent({data = {}, mode = 'add', handleCancel, onAd
             name: (value) => (value.length > 0 ? null : 'Name is required'),
         },
         enhanceGetInputProps: () => ({disabled: disableForm}),
+        onValuesChange: (values) => {
+            const {instituteName, batch} = values;
+            sessionStorage.setItem('instituteName', instituteName);
+            sessionStorage.setItem('batch', batch);
+        }
     });
 
     const [isLoading, setIsLoading] = useState(false);
@@ -80,8 +87,9 @@ export function CreateUpdateStudent({data = {}, mode = 'add', handleCancel, onAd
                     <Grid.Col span={6}>
                         <TextInput
                             label="Batch"
-                            placeholder="Enter batch"
                             {...form.getInputProps('batch')}
+                            placeholder="Enter batch"
+
                         />
                     </Grid.Col>
                     <Grid.Col span={6}>

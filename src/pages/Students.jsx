@@ -281,11 +281,11 @@ export default function Students() {
 
         const totalCount = filteredItems.length;
         const totalPages = Math.ceil(totalCount / pagination.pageSize);
-        const startIndex = (pagination.page - 1) * pagination.pageSize;
-        const endIndex = pagination.page * pagination.pageSize;
-
-        const paginatedItems = filteredItems.slice(startIndex, endIndex);
-
+        const currentPage = Math.min(pagination.page, totalPages);
+        const startIndex = (currentPage - 1) * pagination.pageSize;
+        const endIndex = currentPage * totalCount;
+        // const endIndex = Math.min(currentPage * pagination.pageSize, totalCount);
+        const paginatedItems = filteredItems.slice(startIndex, Math.min(endIndex, totalCount));
         return {
             items: paginatedItems,
             totalCount,
@@ -366,7 +366,6 @@ export default function Students() {
         <Container fluid p={0} m={0}>
             {
                 filteredData ?
-
                     <DataTableWrapper
                         id="id"
                         addTitle={'Student'}

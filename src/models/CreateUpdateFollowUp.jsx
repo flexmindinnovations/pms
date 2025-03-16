@@ -62,10 +62,18 @@ export function CreateUpdateFollowUp({
                     <Grid.Col span={{ base: 12, sm: 6 }}>
                         <TextInput
                             readOnly
-                            disabled
                             label="Recovery Agent Email"
                             placeholder="Enter Email"
                             {...form.getInputProps("recoveryAgentEmail")}
+                            styles={{
+                                input: {
+                                    pointerEvents: 'none',
+                                    cursor: 'not-allowed',
+                                    opacity: .6,
+                                    backgroundColor: 'var(--input-disabled-bg)',
+                                    color: 'var(--input-disabled-color)',
+                                }
+                            }}
                         />
                     </Grid.Col>
 

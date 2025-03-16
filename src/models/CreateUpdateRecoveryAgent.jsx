@@ -60,10 +60,18 @@ export function CreateUpdateRecoveryAgent({data = {}, mode = 'add', handleCancel
                     <Grid.Col span={12} sm={6}>
                         <TextInput
                             label="Email"
-                            readOnly
                             disabled
                             placeholder="Enter your email"
                             {...form.getInputProps('email')}
+                            styles={{
+                                input: {
+                                    pointerEvents: 'none',
+                                    cursor: 'not-allowed',
+                                    opacity: .6,
+                                    backgroundColor: 'var(--input-disabled-bg)',
+                                    color: 'var(--input-disabled-color)',
+                                }
+                            }}
                         />
                     </Grid.Col>
 
