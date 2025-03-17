@@ -1,26 +1,26 @@
-import { TextInput, Text, Container, useMantineTheme, ActionIcon } from "@mantine/core";
-import { useCallback, useEffect, useMemo, useState } from "react";
-import { DataTableWrapper } from "@components/DataTableWrapper.jsx";
-import { utils } from "../utils.js";
-import { CreateUpdateStudent } from "@models/CreateUpdateStudent.jsx";
-import { useModal } from "@hooks/AddEditModal.jsx";
-import { useHttp } from "@hooks/AxiosInstance.js";
-import { useApiConfig } from "@context/ApiConfig.jsx";
-import { CreateUpdateFollowUp } from "@models/CreateUpdateFollowUp.jsx";
-import { Search, X } from 'lucide-react';
+import {ActionIcon, Container, Text, TextInput, useMantineTheme} from "@mantine/core";
+import {useCallback, useEffect, useMemo, useState} from "react";
+import {DataTableWrapper} from "@components/DataTableWrapper.jsx";
+import {utils} from "../utils.js";
+import {CreateUpdateStudent} from "@models/CreateUpdateStudent.jsx";
+import {useModal} from "@hooks/AddEditModal.jsx";
+import {useHttp} from "@hooks/AxiosInstance.js";
+import {useApiConfig} from "@context/ApiConfig.jsx";
+import {CreateUpdateFollowUp} from "@models/CreateUpdateFollowUp.jsx";
+import {Search, X} from 'lucide-react';
 
 export default function Students() {
     const [dataSource, setDataSource] = useState(null);
     const [dataSourceCopy, setDataSourceCopy] = useState(null);
     const [isLoading, setIsLoading] = useState(true);
-    const { openModal } = useModal();
+    const {openModal} = useModal();
     const theme = useMantineTheme();
-    const { get, post, del } = useHttp();
+    const {get, post, del} = useHttp();
     const apiConfig = useApiConfig();
     const [pagination, setPagination] = useState({
         page: dataSource?.pageNumber || 1,
         pageSize: 15,
-        sortStatus: { columnAccessor: "", direction: "" },
+        sortStatus: {columnAccessor: "", direction: ""},
     });
     const PAGE_SIZES = [10, 15, 20];
     const [searchQuery, setSearchQuery] = useState("");
@@ -49,10 +49,11 @@ export default function Students() {
                 <TextInput
                     label="Name"
                     placeholder="Search name..."
-                    leftSection={<Search size={16} />}
+                    leftSection={<Search size={16}/>}
                     rightSection={
-                        <ActionIcon size="sm" variant="transparent" c="dimmed" onClick={() => handleFilterChange('name', '')}>
-                            <X size={14} />
+                        <ActionIcon size="sm" variant="transparent" c="dimmed"
+                                    onClick={() => handleFilterChange('name', '')}>
+                            <X size={14}/>
                         </ActionIcon>
                     }
                     value={filters.name}
@@ -73,10 +74,11 @@ export default function Students() {
                 <TextInput
                     label="Institute"
                     placeholder="Search institute..."
-                    leftSection={<Search size={16} />}
+                    leftSection={<Search size={16}/>}
                     rightSection={
-                        <ActionIcon size="sm" variant="transparent" c="dimmed" onClick={() => handleFilterChange('instituteName', '')}>
-                            <X size={14} />
+                        <ActionIcon size="sm" variant="transparent" c="dimmed"
+                                    onClick={() => handleFilterChange('instituteName', '')}>
+                            <X size={14}/>
                         </ActionIcon>
                     }
                     value={filters.instituteName}
@@ -97,10 +99,11 @@ export default function Students() {
                 <TextInput
                     label="Batch"
                     placeholder="Search batch..."
-                    leftSection={<Search size={16} />}
+                    leftSection={<Search size={16}/>}
                     rightSection={
-                        <ActionIcon size="sm" variant="transparent" c="dimmed" onClick={() => handleFilterChange('batch', '')}>
-                            <X size={14} />
+                        <ActionIcon size="sm" variant="transparent" c="dimmed"
+                                    onClick={() => handleFilterChange('batch', '')}>
+                            <X size={14}/>
                         </ActionIcon>
                     }
                     value={filters.batch}
@@ -121,10 +124,11 @@ export default function Students() {
                 <TextInput
                     label="Phone"
                     placeholder="Search phone..."
-                    leftSection={<Search size={16} />}
+                    leftSection={<Search size={16}/>}
                     rightSection={
-                        <ActionIcon size="sm" variant="transparent" c="dimmed" onClick={() => handleFilterChange('phone', '')}>
-                            <X size={14} />
+                        <ActionIcon size="sm" variant="transparent" c="dimmed"
+                                    onClick={() => handleFilterChange('phone', '')}>
+                            <X size={14}/>
                         </ActionIcon>
                     }
                     value={filters.phone}
@@ -145,10 +149,11 @@ export default function Students() {
                 <TextInput
                     label="Guardian Phone"
                     placeholder="Search guardian phone..."
-                    leftSection={<Search size={16} />}
+                    leftSection={<Search size={16}/>}
                     rightSection={
-                        <ActionIcon size="sm" variant="transparent" c="dimmed" onClick={() => handleFilterChange('gaurdianPhone', '')}>
-                            <X size={14} />
+                        <ActionIcon size="sm" variant="transparent" c="dimmed"
+                                    onClick={() => handleFilterChange('gaurdianPhone', '')}>
+                            <X size={14}/>
                         </ActionIcon>
                     }
                     value={filters.gaurdianPhone}
@@ -169,10 +174,11 @@ export default function Students() {
                 <TextInput
                     label="Email"
                     placeholder="Search email..."
-                    leftSection={<Search size={16} />}
+                    leftSection={<Search size={16}/>}
                     rightSection={
-                        <ActionIcon size="sm" variant="transparent" c="dimmed" onClick={() => handleFilterChange('email', '')}>
-                            <X size={14} />
+                        <ActionIcon size="sm" variant="transparent" c="dimmed"
+                                    onClick={() => handleFilterChange('email', '')}>
+                            <X size={14}/>
                         </ActionIcon>
                     }
                     value={filters.email}
@@ -193,10 +199,11 @@ export default function Students() {
                 <TextInput
                     label="Guardian Email"
                     placeholder="Search guardian email..."
-                    leftSection={<Search size={16} />}
+                    leftSection={<Search size={16}/>}
                     rightSection={
-                        <ActionIcon size="sm" variant="transparent" c="dimmed" onClick={() => handleFilterChange('gaurdianEmail', '')}>
-                            <X size={14} />
+                        <ActionIcon size="sm" variant="transparent" c="dimmed"
+                                    onClick={() => handleFilterChange('gaurdianEmail', '')}>
+                            <X size={14}/>
                         </ActionIcon>
                     }
                     value={filters.gaurdianEmail}
@@ -230,16 +237,52 @@ export default function Students() {
     };
 
     const handleLinkClick = (record) => {
-        openFollowupModal({ data: record });
+        openFollowupModal({data: record});
+    }
+
+    const getFilteredData = () => {
+        return dataSource.items.filter((record) => {
+            return columns.every((col) => {
+                if (filters[col.accessor]) {
+                    switch (col.accessor) {
+                        case 'name':
+                            return record.name?.toLowerCase().includes(filters.name.toLowerCase());
+                        case 'instituteName':
+                            return record.instituteName?.toLowerCase().includes(filters.instituteName.toLowerCase());
+                        case 'batch':
+                            return record.batch?.toLowerCase().includes(filters.batch.toLowerCase());
+                        case 'phone':
+                            return record.phone?.toLowerCase().includes(filters.phone.toLowerCase());
+                        case 'gaurdianPhone':
+                            return record.gaurdianPhone?.toLowerCase().includes(filters.gaurdianPhone.toLowerCase());
+                        case 'email':
+                            return record.email?.toLowerCase().includes(filters.email.toLowerCase());
+                        case 'gaurdianEmail':
+                            return record.gaurdianEmail?.toLowerCase().includes(filters.gaurdianEmail.toLowerCase());
+                        default:
+                            return true;
+                    }
+                }
+                return true;
+            });
+        });
     }
 
     const filteredData = useMemo(() => {
-        if (!dataSource?.items) return { items: [], totalCount: 0, pageNumber: 1, totalPages: 1, hasPreviousPage: false, hasNextPage: false };
+        if (!dataSource?.items) return {
+            items: [],
+            totalCount: 0,
+            pageNumber: 1,
+            totalPages: 1,
+            hasPreviousPage: false,
+            hasNextPage: false
+        };
 
         const query = searchQuery.toLowerCase();
         let filteredItems = [];
-
         if (query) {
+            filteredItems = getFilteredData();
+        } else {
             filteredItems = dataSource.items.filter((record) => {
                 return (
                     (record?.name && record.name.toLowerCase().includes(query)) ||
@@ -250,32 +293,6 @@ export default function Students() {
                     (record?.email && record.email.toLowerCase().includes(query)) ||
                     (record?.gaurdianEmail && record.gaurdianEmail.toLowerCase().includes(query))
                 );
-            });
-        } else {
-            filteredItems = dataSource.items.filter((record) => {
-                return columns.every((col) => {
-                    if (filters[col.accessor]) {
-                        switch (col.accessor) {
-                            case 'name':
-                                return record.name?.toLowerCase().includes(filters.name.toLowerCase());
-                            case 'instituteName':
-                                return record.instituteName?.toLowerCase().includes(filters.instituteName.toLowerCase());
-                            case 'batch':
-                                return record.batch?.toLowerCase().includes(filters.batch.toLowerCase());
-                            case 'phone':
-                                return record.phone?.toLowerCase().includes(filters.phone.toLowerCase());
-                            case 'gaurdianPhone':
-                                return record.gaurdianPhone?.toLowerCase().includes(filters.gaurdianPhone.toLowerCase());
-                            case 'email':
-                                return record.email?.toLowerCase().includes(filters.email.toLowerCase());
-                            case 'gaurdianEmail':
-                                return record.gaurdianEmail?.toLowerCase().includes(filters.gaurdianEmail.toLowerCase());
-                            default:
-                                return true;
-                        }
-                    }
-                    return true;
-                });
             });
         }
 
@@ -315,7 +332,7 @@ export default function Students() {
                 }));
             }
         } catch (err) {
-            const { message } = err;
+            const {message} = err;
             utils.showNotifications('Error', message, 'error', theme);
         } finally {
             setIsLoading(false);
@@ -323,10 +340,10 @@ export default function Students() {
     }, [])
 
     const handleOnAddEdit = (data, mode) => {
-        openAddEditModal({ data, mode });
+        openAddEditModal({data, mode});
     }
 
-    const openAddEditModal = ({ data = {}, mode = 'add' }) => {
+    const openAddEditModal = ({data = {}, mode = 'add'}) => {
         openModal({
             Component: CreateUpdateStudent,
             data,
@@ -336,7 +353,7 @@ export default function Students() {
         });
     }
 
-    const openFollowupModal = ({ data = {}, mode = 'followup' }) => {
+    const openFollowupModal = ({data = {}, mode = 'followup'}) => {
         openModal({
             Component: CreateUpdateFollowUp,
             data,
@@ -347,9 +364,9 @@ export default function Students() {
 
     const handleOnDelete = async (data) => {
         setIsLoading(true);
-        const { id } = data;
+        const {id} = data;
         try {
-            const response = await del(apiConfig.students.delete, { data: { id } });
+            const response = await del(apiConfig.students.delete, {data: {id}});
             if (response.status === 200) {
                 utils.showNotifications('Success', 'Operation successful!', 'success', theme);
                 getStudentList().then();
