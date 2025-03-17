@@ -9,37 +9,37 @@ import {
     Tooltip,
     useMantineTheme
 } from "@mantine/core";
-import { useCallback, useEffect, useMemo, useState } from "react";
-import { useHttp } from "@hooks/AxiosInstance.js";
-import { useApiConfig } from "@context/ApiConfig.jsx";
-import { utils } from "../utils.js";
-import { ExternalLink, IndianRupee, Search, X } from 'lucide-react';
-import { useLocation, useNavigate, useParams } from "react-router-dom";
+import {useCallback, useEffect, useMemo, useState} from "react";
+import {useHttp} from "@hooks/AxiosInstance.js";
+import {useApiConfig} from "@context/ApiConfig.jsx";
+import {utils} from "../utils.js";
+import {ExternalLink, IndianRupee, Search, X} from 'lucide-react';
+import {useLocation, useNavigate, useParams} from "react-router-dom";
 import dayjs from "dayjs";
 import utc from "dayjs/plugin/utc.js";
 import tz from "dayjs/plugin/timezone.js";
-import { useModal } from "@hooks/AddEditModal.jsx";
-import { RecoveryAgentDetails } from "@models/RecoveryAgentDetails.jsx";
-import { CreateUpdateStudent } from "@models/CreateUpdateStudent.jsx";
-import { DataTable } from "mantine-datatable";
+import {useModal} from "@hooks/AddEditModal.jsx";
+import {RecoveryAgentDetails} from "@models/RecoveryAgentDetails.jsx";
+import {CreateUpdateStudent} from "@models/CreateUpdateStudent.jsx";
+import {DataTable} from "mantine-datatable";
 
 dayjs.extend(utc);
 dayjs.extend(tz);
 
 export default function CampaignDetails() {
-    const { campaignId } = useParams();
+    const {campaignId} = useParams();
     const location = useLocation();
     const navigate = useNavigate();
     const [isLoading, setIsLoading] = useState(false);
     const [dataSource, setDataSource] = useState(null);
     const theme = useMantineTheme();
-    const { get, del } = useHttp();
+    const {get, del} = useHttp();
     const apiConfig = useApiConfig();
-    const { openModal } = useModal();
+    const {openModal} = useModal();
     const [pagination, setPagination] = useState({
         page: dataSource?.pageNumber || 1,
         pageSize: 15,
-        sortStatus: { columnAccessor: "", direction: "" },
+        sortStatus: {columnAccessor: "", direction: ""},
     });
     const PAGE_SIZES = [10, 15, 20];
     const [searchQuery, setSearchQuery] = useState("");
@@ -73,10 +73,11 @@ export default function CampaignDetails() {
                 <TextInput
                     label="Status"
                     placeholder="Search status..."
-                    leftSection={<Search size={16} />}
+                    leftSection={<Search size={16}/>}
                     rightSection={
-                        <ActionIcon size="sm" variant="transparent" c="dimmed" onClick={() => handleFilterChange('status', '')}>
-                            <X size={14} />
+                        <ActionIcon size="sm" variant="transparent" c="dimmed"
+                                    onClick={() => handleFilterChange('status', '')}>
+                            <X size={14}/>
                         </ActionIcon>
                     }
                     value={filters.status}
@@ -116,7 +117,7 @@ export default function CampaignDetails() {
             render: (record) => (
                 <div className={`bg-white w-full flex items-center justify-center`}>
                     <ActionIcon variant="transparent" onClick={() => navigateToFollowUp(record)}>
-                        <ExternalLink size={20} />
+                        <ExternalLink size={20}/>
                     </ActionIcon>
                 </div>
             ),
@@ -145,10 +146,11 @@ export default function CampaignDetails() {
                 <TextInput
                     label="Name"
                     placeholder="Search name..."
-                    leftSection={<Search size={16} />}
+                    leftSection={<Search size={16}/>}
                     rightSection={
-                        <ActionIcon size="sm" variant="transparent" c="dimmed" onClick={() => handleFilterChange('name', '')}>
-                            <X size={14} />
+                        <ActionIcon size="sm" variant="transparent" c="dimmed"
+                                    onClick={() => handleFilterChange('name', '')}>
+                            <X size={14}/>
                         </ActionIcon>
                     }
                     value={filters.name}
@@ -166,17 +168,19 @@ export default function CampaignDetails() {
             width: 200,
             render: (record) => (
                 <Tooltip label={record?.studentDto?.instituteName}>
-                    <Text px={10} className={`px-4 py-2 text-base text-start`}>{utils.truncateText(record?.studentDto?.instituteName, 20)}</Text>
+                    <Text px={10}
+                          className={`px-4 py-2 text-base text-start`}>{utils.truncateText(record?.studentDto?.instituteName, 20)}</Text>
                 </Tooltip>
             ),
             filter: (
                 <TextInput
                     label="Institute"
                     placeholder="Search institute..."
-                    leftSection={<Search size={16} />}
+                    leftSection={<Search size={16}/>}
                     rightSection={
-                        <ActionIcon size="sm" variant="transparent" c="dimmed" onClick={() => handleFilterChange('instituteName', '')}>
-                            <X size={14} />
+                        <ActionIcon size="sm" variant="transparent" c="dimmed"
+                                    onClick={() => handleFilterChange('instituteName', '')}>
+                            <X size={14}/>
                         </ActionIcon>
                     }
                     value={filters.instituteName}
@@ -195,10 +199,11 @@ export default function CampaignDetails() {
                 <TextInput
                     label="Batch"
                     placeholder="Search batch..."
-                    leftSection={<Search size={16} />}
+                    leftSection={<Search size={16}/>}
                     rightSection={
-                        <ActionIcon size="sm" variant="transparent" c="dimmed" onClick={() => handleFilterChange('batch', '')}>
-                            <X size={14} />
+                        <ActionIcon size="sm" variant="transparent" c="dimmed"
+                                    onClick={() => handleFilterChange('batch', '')}>
+                            <X size={14}/>
                         </ActionIcon>
                     }
                     value={filters.batch}
@@ -219,10 +224,11 @@ export default function CampaignDetails() {
                 <TextInput
                     label="Phone"
                     placeholder="Search Phone..."
-                    leftSection={<Search size={16} />}
+                    leftSection={<Search size={16}/>}
                     rightSection={
-                        <ActionIcon size="sm" variant="transparent" c="dimmed" onClick={() => handleFilterChange('phone', '')}>
-                            <X size={14} />
+                        <ActionIcon size="sm" variant="transparent" c="dimmed"
+                                    onClick={() => handleFilterChange('phone', '')}>
+                            <X size={14}/>
                         </ActionIcon>
                     }
                     value={filters.phone}
@@ -245,9 +251,9 @@ export default function CampaignDetails() {
                 <div className={`w-full text-left px-4 py-2`}>
                     {
                         record?.outstandingAmount ? (
-                            <Text className={`flex items-center`}><IndianRupee size={14} />{record?.outstandingAmount}
-                            </Text>
-                        ) :
+                                <Text className={`flex items-center`}><IndianRupee size={14}/>{record?.outstandingAmount}
+                                </Text>
+                            ) :
                             <Text>NA</Text>
                     }
                 </div>
@@ -256,10 +262,11 @@ export default function CampaignDetails() {
                 <TextInput
                     label="Balances"
                     placeholder="Search balances..."
-                    leftSection={<Search size={16} />}
+                    leftSection={<Search size={16}/>}
                     rightSection={
-                        <ActionIcon size="sm" variant="transparent" c="dimmed" onClick={() => handleFilterChange('outstandingAmount', '')}>
-                            <X size={14} />
+                        <ActionIcon size="sm" variant="transparent" c="dimmed"
+                                    onClick={() => handleFilterChange('outstandingAmount', '')}>
+                            <X size={14}/>
                         </ActionIcon>
                     }
                     value={filters.outstandingAmount}
@@ -273,7 +280,7 @@ export default function CampaignDetails() {
             title: 'Last Followup',
             minWidth: 150,
             ...utils.colPros,
-            render: ({ followUp }) => (
+            render: ({followUp}) => (
                 <div className={`w-full text-left px-4 py-2`}>
                     <Text>{dayjs.utc(followUp?.timestamp).tz('Asia/Kolkata').format('MMMM D, YYYY h:mm A')}</Text>
                 </div>
@@ -299,10 +306,11 @@ export default function CampaignDetails() {
                 <TextInput
                     label="Last Caller"
                     placeholder="Search last caller..."
-                    leftSection={<Search size={16} />}
+                    leftSection={<Search size={16}/>}
                     rightSection={
-                        <ActionIcon size="sm" variant="transparent" c="dimmed" onClick={() => handleFilterChange('lastCaller', '')}>
-                            <X size={14} />
+                        <ActionIcon size="sm" variant="transparent" c="dimmed"
+                                    onClick={() => handleFilterChange('lastCaller', '')}>
+                            <X size={14}/>
                         </ActionIcon>
                     }
                     value={filters.lastCaller}
@@ -313,7 +321,7 @@ export default function CampaignDetails() {
             render: (record) => (
                 <div className={`w-full text-left px-4 py-2`}>
                     <Anchor c={theme.colors.blue[6]} size={'md'}
-                        onClick={() => handleLinkClick(record, 'recoveryAgent')}>
+                            onClick={() => handleLinkClick(record, 'recoveryAgent')}>
                         {record?.followUp?.recoveryAgentDto?.name}
                     </Anchor>
                 </div>
@@ -335,13 +343,13 @@ export default function CampaignDetails() {
             title: 'Commitment Amount',
             minWidth: 80,
             ...utils.colPros,
-            render: ({ followUp }) => (
+            render: ({followUp}) => (
                 <div className={`w-full text-left px-4 py-2`}>
                     {
                         followUp?.committmentAmount ? (
-                            <Text className={`flex items-center`}><IndianRupee size={14} />{followUp?.committmentAmount}
-                            </Text>
-                        ) :
+                                <Text className={`flex items-center`}><IndianRupee size={14}/>{followUp?.committmentAmount}
+                                </Text>
+                            ) :
                             <Text>NA</Text>
                     }
                 </div>
@@ -356,9 +364,9 @@ export default function CampaignDetails() {
             render: (record) => (
                 <div className={`px-4`}>
                     <Card p={2} py={4} c={record?.isLastTallySyncSuccess ? theme.colors.green[9] : theme.colors.red[9]}
-                        withBorder
-                        bg={record?.isLastTallySyncSuccess ? theme.colors.green[1] : theme.colors.red[1]}
-                        className={`flex w-full items-center justify-center`}>
+                          withBorder
+                          bg={record?.isLastTallySyncSuccess ? theme.colors.green[1] : theme.colors.red[1]}
+                          className={`flex w-full items-center justify-center`}>
                         <Text size={'xs'} fw={'bold'}>{record?.isLastTallySyncSuccess ? 'Success' : 'Failed'}</Text>
                     </Card>
                 </div>
@@ -477,36 +485,36 @@ export default function CampaignDetails() {
 
 
     const handleSortChange = useCallback((sortStatus) => {
-        setPagination((prev) => ({ ...prev, sortStatus }));
+        setPagination((prev) => ({...prev, sortStatus}));
     }, []);
 
     const handlePageChange = (page) => {
-        setPagination((prev) => ({ ...prev, page }));
-        fetchData({ page, pageSize: pagination.pageSize });
+        setPagination((prev) => ({...prev, page}));
+        fetchData({page, pageSize: pagination.pageSize});
     };
 
     const handlePageSizeChange = (pageSize) => {
-        setPagination({ ...pagination, pageSize, page: 1 });
-        fetchData({ page: 1, pageSize });
+        setPagination({...pagination, pageSize, page: 1});
+        fetchData({page: 1, pageSize});
     };
 
-    const fetchData = ({ page, pageSize }) => {
+    const fetchData = ({page, pageSize}) => {
         getCampaignDetails(page, pageSize).then();
     };
 
     const navigateToFollowUp = (record) => {
-        navigate(`/campaign-details/${campaignId}/follow-up`, { state: record });
+        navigate(`/campaign-details/${campaignId}/follow-up`, {state: record});
     }
 
     const handleLinkClick = (record, user) => {
         switch (user) {
             case 'recoveryAgent': {
-                const { recoveryAgentDto } = record.followUp;
+                const {recoveryAgentDto} = record.followUp;
                 openDetailsModel(recoveryAgentDto, RecoveryAgentDetails, 'Recovery Agent', 'view')
                 break;
             }
             case 'student': {
-                const { studentDto } = record;
+                const {studentDto} = record;
                 openDetailsModel(studentDto, CreateUpdateStudent, 'Update Student Details', 'edit');
                 break;
             }
@@ -523,8 +531,7 @@ export default function CampaignDetails() {
             title,
             mode,
             isView: mode !== 'edit',
-            handleRefresh: () => {
-            }
+            handleRefresh: () => getCampaignDetails().then()
         })
     }
 
@@ -543,12 +550,12 @@ export default function CampaignDetails() {
                 const newDataSource = {
                     items: data?.items.map((record) => {
                         // if (record.outstandingAmount >= 0) {
-                            return {
-                                ...record,
-                                followUp: record.followups.reduce((latest, current) => {
-                                    return dayjs(current.timestamp).isAfter(dayjs(latest.timestamp)) ? current : latest;
-                                }, record.followups[0])
-                            }
+                        return {
+                            ...record,
+                            followUp: record.followups.reduce((latest, current) => {
+                                return dayjs(current.timestamp).isAfter(dayjs(latest.timestamp)) ? current : latest;
+                            }, record.followups[0])
+                        }
                         // }
                         // return null;
                     }).filter(Boolean)
@@ -567,7 +574,7 @@ export default function CampaignDetails() {
                 )
             }
         } catch (err) {
-            const { message } = err;
+            const {message} = err;
             utils.showNotifications('Error', message, 'error', theme);
         } finally {
             setIsLoading(false);
@@ -576,15 +583,15 @@ export default function CampaignDetails() {
 
     return (
         <Container size={'xl'} p={0} fluid>
-            <div className={`mb-4`} style={{ position: "relative", width: "50%" }}>
+            <div className={`mb-4`} style={{position: "relative", width: "50%"}}>
                 <TextInput
                     type="text"
-                    leftSection={<Search size={16} />}
+                    leftSection={<Search size={16}/>}
                     disabled={isLoading || !dataSource?.items?.length}
                     rightSection={
                         searchQuery && (
                             <Tooltip label="Clear Search">
-                                <CloseButton onClick={() => setSearchQuery("")} />
+                                <CloseButton onClick={() => setSearchQuery("")}/>
                             </Tooltip>
                         )
                     }
@@ -592,7 +599,7 @@ export default function CampaignDetails() {
                     placeholder="Search"
                     value={searchQuery}
                     onChange={(e) => setSearchQuery(e.target.value)}
-                    style={{ width: "100%" }}
+                    style={{width: "100%"}}
                 />
             </div>
 
@@ -615,7 +622,7 @@ export default function CampaignDetails() {
                 sortStatus={pagination.sortStatus}
                 onSortStatusChange={handleSortChange}
                 paginationSize="md"
-                paginationText={({ from, to, totalRecords }) =>
+                paginationText={({from, to, totalRecords}) =>
                     `Records ${from} - ${to} of ${totalRecords}`
                 }
                 paginationWrapBreakpoint="sm"
